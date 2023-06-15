@@ -9,6 +9,12 @@ const theme = createTheme({
     primary: '#000',
   },
   mode: 'light',
+  header1: {
+    fontSize: 28,
+  },
+  header2: {
+    fontSize: 25,
+  },
 });
 
 export default theme;
