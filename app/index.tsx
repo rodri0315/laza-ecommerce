@@ -1,8 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import { Button, Text, ThemeProvider } from 'react-native-elements';
+import { ThemeProvider, createTheme } from '@rneui/themed';
 import useCachedResources from './hooks/useCachedResources';
 import Example from "./components/Example";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import theme from './config/theme';
 
 
 export default function App() {
@@ -13,9 +15,11 @@ export default function App() {
     return null;
   } else {
     return (
-      <ThemeProvider>
-        <Example />
-      </ThemeProvider>
+      <SafeAreaProvider>
+        <ThemeProvider theme={theme}>
+          <Example />
+        </ThemeProvider>
+      </SafeAreaProvider>
     );
   }
 }
