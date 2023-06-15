@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text, ThemeProvider } from 'react-native-elements';
-import useCachedResources from './app/hooks/useCachedResources';
-import Example from "./app/components/Example";
+import useCachedResources from './hooks/useCachedResources';
+import Example from "./components/Example";
 
 
 export default function App() {
