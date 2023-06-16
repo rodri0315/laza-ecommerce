@@ -8,7 +8,7 @@ export default {
   grey0: '#393e42',
   grey1: '#43484d',
   grey2: '#5e6977',
-  grey3: '#86939e',
+  grey3: '#8F959E',
   grey4: '#bdc6cf',
   grey5: '#F5F6FA', // light grey
   white: '#ffffff',
@@ -17,4 +17,7 @@ export default {
   searchBg: '#F5F6FA',
   red: '#EA4335', // red
   orange: '#FF7043', // orange
+  facebook: '#3b5998', // facebook blue
+  google: '#d34836', // google red
+  twitter: '#00aced', // twitter blue
 }
