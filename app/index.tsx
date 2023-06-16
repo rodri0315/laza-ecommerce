@@ -1,8 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
 import { ThemeProvider, createTheme } from '@rneui/themed';
 import useCachedResources from './hooks/useCachedResources';
-import Example from "./components/Example";
+import Onboarding from "./onboarding";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import theme from './config/theme';
 
@@ -17,7 +16,7 @@ export default function App() {
     return (
       <SafeAreaProvider>
         <ThemeProvider theme={theme}>
-          <Example />
+          <Onboarding />
         </ThemeProvider>
       </SafeAreaProvider>
     );
