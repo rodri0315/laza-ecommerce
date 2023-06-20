@@ -1,12 +1,9 @@
 import Constants from "expo-constants";
-export interface IConfig {
-  SUPABASE_URL: string;
-  SUPABASE_ANON_KEY: string;
-}
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@env";
 
-const Config: IConfig = {
-  SUPABASE_URL: Constants?.expoConfig?.extra?.SUPABASE_URL,
-  SUPABASE_ANON_KEY: Constants?.expoConfig?.extra?.SUPABASE_KEY,
+const Config = {
+  SUPABASE_URL: SUPABASE_URL,
+  SUPABASE_ANON_KEY: SUPABASE_ANON_KEY,
 };
 
 export default Config;
