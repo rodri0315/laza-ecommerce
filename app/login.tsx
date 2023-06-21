@@ -6,6 +6,7 @@ import { supabaseClient } from './config/supabase-client';
 import { useRouter, Link } from 'expo-router';
 import colors from './config/colors';
 import { Session } from '@supabase/supabase-js';
+import BackButton from './components/BackButton';
 
 export default function Login() {
   const navigation = useRouter();
@@ -60,26 +61,7 @@ export default function Login() {
   return (
     <View style={styles.container}>
       <View style={styles.topHeader}>
-        <TouchableOpacity
-          onPress={() => navigation.back()}
-          style={{
-            backgroundColor: 'lightgrey',
-            padding: 20,
-            borderRadius: 100,
-            width: 30,
-            height: 30,
-
-          }}>
-          {/* // back arrow */}
-          <Text style={{
-            fontSize: 20,
-            color: 'white',
-            textAlign: 'center',
-          }}>
-            {'<-'}
-          </Text>
-        </TouchableOpacity>
-
+        <BackButton />
         <View
           style={{
             justifyContent: 'flex-start',
@@ -217,15 +199,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
   },
   topHeader: {
-    // flex: 1,
-    height: '15%',
-    // justifyContent: 'flex-end',
+    height: '20%',
+    justifyContent: 'flex-end',
     paddingBottom: 10,
     paddingLeft: 10,
-    paddingVertical: 40,
   },
   header: {
     fontSize: 28,
