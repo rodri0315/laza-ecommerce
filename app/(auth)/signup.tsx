@@ -55,12 +55,11 @@ export default function Signup() {
             Yup.object().shape({
               username: Yup.string().required("Username required").min(3).max(50),
               password: Yup.string().matches(
-                passwordRules, { message: "Create a stronger password" })
+                passwordRules, { message: "Password must be at least 8 chars, contain at least one Uppercase and Number" })
                 .required().min(8).max(50),
               email: Yup.string().required().email("Valid email required").max(50),
             })
           }
-
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View style={{ flex: 1 }}>
@@ -90,6 +89,8 @@ export default function Signup() {
                         )}`
                       }}
                       errorMessage={`${errors.username ? errors.username : ""}`}
+                      inputContainerStyle={styles.input}
+                      labelStyle={styles.label}
                     />
                     <View style={{ position: 'relative' }}>
 
@@ -101,7 +102,8 @@ export default function Signup() {
                         placeholder="Password"
                         secureTextEntry
                         errorMessage={`${errors.password && touched.password ? errors.password : ""}`}
-                        style={{}}
+                        inputContainerStyle={styles.input}
+                        labelStyle={styles.label}
                       />
                       <Text style={{
                         position: 'absolute',
@@ -133,26 +135,17 @@ export default function Signup() {
                         />
                       }
                       errorMessage={`${errors.email && touched.email ? errors.email : ""}`}
+                      inputContainerStyle={styles.input}
+                      labelStyle={styles.label}
                     />
-                  </View>
-                  <View>
-                    <TouchableOpacity
-                      onPress={() => navigation.push("/forgot-password")}
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        padding: 10,
-                        paddingBottom: 40,
-                        paddingTop: 20,
-                      }}>
-                      <Text style={styles.forgotPassword}>Forgot Password?</Text>
-                    </TouchableOpacity>
                   </View>
                   <View style={styles.toggle}>
                     <Text>Remember me</Text>
                     <Switch
                       onValueChange={toggleSwitch}
                       value={isEnabled}
+                      style={styles.switch}
+                      trackColor={{ false: colors.grey3, true: colors.secondary3 }}
                     />
                   </View>
 
@@ -220,6 +213,17 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     color: colors.red,
+  },
+  input: {
+    borderBottomColor: colors.grey6,
+  },
+  switch: {
+    transform: [{ scaleX: .8 }, { scaleY: .8 }]
+  },
+  label: {
+    color: colors.grey3,
+    fontSize: 13,
+    fontWeight: 'normal',
   }
 });
 
