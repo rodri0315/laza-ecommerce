@@ -10,58 +10,14 @@ import BackButton from '../components/BackButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function Login(props) {
+export default function Login() {
   const navigation = useRouter();
-  //auth context for login
-  console.log('props', props)
 
   const { SignIn } = useAuth();
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   const [session, setSession] = useState<Session | null>()
   const [loading, setLoading] = useState(false);
-
-  // const { handleSubmit } = useFormikContext();
-
-  // const formik = useFormik({
-  //   initialValues: {
-  //     username: '',
-  //     password: '',
-  //     confirmPassword: '',
-  //   },
-  //   onSubmit: async (values) => {
-  //     alert(JSON.stringify(values, null, 2));
-  //     // setLoading(true);
-  //     // try {
-  //     //   const { error } = await supabaseClient.auth.signInWithPassword({
-  //     //     email,
-  //     //     password
-  //     //   })
-  //     //   if (error) throw error
-  //     //   navigation.replace("/");
-  //     // } catch (err) {
-  //     //   throw err;
-  //     // } finally {
-  //     //   setLoading(false);
-  //     // }
-  //   },
-  // });
-
-  // const Login = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const { error } = await supabaseClient.auth.signInWithPassword({
-  //       email,
-  //       password
-  //     })
-  //     if (error) throw error
-  //     navigation.replace("/");
-  //   } catch (err) {
-  //     throw err;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
 
   const handleSignIn = async (user: Session) => {
     SignIn(user);
@@ -83,13 +39,12 @@ export default function Login(props) {
       </View>
       <View style={{ flex: 5 }}>
         <Formik
-          initialValues={{ password: 'password', confirmPassword: '', username: 'jorge@headway.io' }}
+          initialValues={{ password: 'password', confirmPassword: '', email: 'jorge@headway.io' }}
           onSubmit={async (values) => {
-            alert(JSON.stringify(values, null, 2));
             setLoading(true);
             try {
               const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: values.username,
+                email: values.email,
                 password: values.password
               })
               if (error) throw error
@@ -105,10 +60,8 @@ export default function Login(props) {
             }
           }}
         >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
-            <View style={{
-              flex: 1,
-            }}>
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <View style={{ flex: 1 }}>
               <View style={{ flex: 1 }}>
                 <View style={{
                   flex: 5,
@@ -117,11 +70,13 @@ export default function Login(props) {
                 }}>
                   <View>
                     <Input
-                      onChangeText={handleChange('username')}
-                      onBlur={handleBlur('username')}
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
                       label="Email"
-                      value={values.username}
+                      value={values.email}
                       placeholder="Email"
+                      inputContainerStyle={styles.input}
+                      labelStyle={styles.label}
                     />
                     <Input
                       onChangeText={handleChange('password')}
@@ -130,14 +85,8 @@ export default function Login(props) {
                       value={values.password}
                       placeholder="Password"
                       secureTextEntry
-                    />
-                    <Input
-                      onChangeText={handleChange('confirmPassword')}
-                      onBlur={handleBlur('confirmPassword')}
-                      label="Confirm Password"
-                      value={values.confirmPassword}
-                      placeholder="Password"
-                      secureTextEntry
+                      inputContainerStyle={styles.input}
+                      labelStyle={styles.label}
                     />
                   </View>
                   <View>
@@ -158,6 +107,8 @@ export default function Login(props) {
                     <Switch
                       onValueChange={toggleSwitch}
                       value={isEnabled}
+                      style={styles.switch}
+                      trackColor={{ false: colors.grey3, true: colors.secondary3 }}
                     />
                   </View>
 
@@ -175,7 +126,7 @@ export default function Login(props) {
 
                       <Text style={styles.termsText}>
                         {'By connecting your account confirm that you agree with our '}
-                        <Link href="/login" style={{ color: colors.dkGreyBg }}>Term and Condition</Link>
+                        <Link href="/login" style={{ color: colors.black }}>Term and Condition</Link>
                       </Text>
                     </View>
                   </View>
@@ -235,8 +186,19 @@ const styles = StyleSheet.create({
   },
   termsText: {
     fontSize: 13,
-    color: colors.dkGreyBg,
+    color: colors.grey3,
     textAlign: 'center',
   },
+  switch: {
+    transform: [{ scaleX: .8 }, { scaleY: .8 }]
+  },
+  input: {
+    borderBottomColor: colors.grey6,
+  },
+  label: {
+    color: colors.grey3,
+    fontSize: 13,
+    fontWeight: 'normal',
+  }
 });
 
