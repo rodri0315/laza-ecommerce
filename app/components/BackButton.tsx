@@ -1,9 +1,8 @@
+import React from 'react';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
-
-import React from 'react';
-import { View, Text } from 'react-native';
+import colors from '../config/colors';
 
 export default function BackButton() {
   const navigation = useRouter();
@@ -11,7 +10,7 @@ export default function BackButton() {
     <TouchableOpacity
       onPress={() => navigation.back()}
       style={{
-        backgroundColor: 'lightgrey',
+        backgroundColor: colors.grey5,
         borderRadius: 50,
         width: 45,
         height: 45,
