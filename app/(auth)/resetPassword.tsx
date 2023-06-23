@@ -7,6 +7,10 @@ import { Link, useRouter } from 'expo-router';
 import colors from '../config/colors';
 import { Session } from '@supabase/supabase-js';
 import BackButton from '../components/BackButton';
+import * as Yup from "yup";
+import { Ionicons } from '@expo/vector-icons';
+import { passwordRules } from '../helpers/constants';
+import { displayValidationIcon } from '../helpers/helpers';
 
 export default function ResetPassword() {
   const navigation = useRouter();
@@ -46,9 +50,20 @@ export default function ResetPassword() {
               setLoading(false);
             }
           }}
+          validationSchema={
+            Yup.object().shape({
+              password: Yup.string().matches(
+                passwordRules, { message: "Create a stronger password" })
+                .required().min(8).max(50),
+              confirmPassword: Yup.string().matches(
+                passwordRules, { message: "Create a stronger password" })
+                .oneOf([Yup.ref("password")], "Passwords must match")
+                .required().min(8).max(50),
+            })
+          }
 
         >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View style={{
               flex: 1,
             }}>
@@ -76,6 +91,19 @@ export default function ResetPassword() {
                       value={values.confirmPassword}
                       placeholder="Password"
                       secureTextEntry
+                      rightIcon={
+                        <Ionicons
+                          name="checkmark"
+                          size={18}
+                          color={colors.secondary3}
+                        />
+                      }
+                      rightIconContainerStyle={{
+                        display: `${displayValidationIcon(
+                          errors.confirmPassword, touched.confirmPassword, values.confirmPassword
+                        )}`
+                      }}
+                      errorMessage={`${errors.confirmPassword ? errors.confirmPassword : ""}`}
                     />
                   </View>
                   <View>
