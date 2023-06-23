@@ -16,7 +16,6 @@ export default function Login() {
   const { SignIn } = useAuth();
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  const [session, setSession] = useState<Session | null>()
   const [loading, setLoading] = useState(false);
 
   const handleSignIn = async (user: Session) => {
@@ -34,7 +33,7 @@ export default function Login() {
           }}
         >
           <Text style={styles.header}>Welcome</Text>
-          <Text style={{}}>Please enter your data to continue</Text>
+          <Text style={styles.subtitle}>Please enter your data to continue</Text>
         </View>
       </View>
       <View style={{ flex: 5 }}>
@@ -52,7 +51,6 @@ export default function Login() {
                 AsyncStorage.setItem("user", JSON.stringify(data.session));
               }
               handleSignIn(data.session)
-              // navigation.replace("/");
             } catch (err) {
               throw err;
             } finally {
@@ -60,14 +58,10 @@ export default function Login() {
             }
           }}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+          {({ handleChange, handleBlur, handleSubmit, values }) => (
             <View style={{ flex: 1 }}>
               <View style={{ flex: 1 }}>
-                <View style={{
-                  flex: 5,
-                  justifyContent: 'center',
-                  paddingHorizontal: 10,
-                }}>
+                <View style={styles.body}>
                   <View>
                     <Input
                       onChangeText={handleChange('email')}
@@ -147,9 +141,7 @@ export default function Login() {
             </View>
           )}
         </Formik>
-
       </View>
-
     </View>
   );
 }
@@ -169,6 +161,11 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
+  },
+  body: {
+    flex: 5,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
   },
   accountText: {
     color: 'white',
@@ -199,6 +196,10 @@ const styles = StyleSheet.create({
     color: colors.grey3,
     fontSize: 13,
     fontWeight: 'normal',
-  }
+  },
+  subtitle: {
+    fontSize: 15,
+    color: colors.grey3,
+  },
 });
 
