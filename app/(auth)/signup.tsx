@@ -7,6 +7,10 @@ import { Link, useRouter } from 'expo-router';
 import colors from '../config/colors';
 import { Session } from '@supabase/supabase-js';
 import BackButton from '../components/BackButton';
+import * as Yup from "yup";
+import { Ionicons } from '@expo/vector-icons';
+import { passwordRules } from '../helpers/constants';
+import { displayValidationIcon } from '../helpers/helpers';
 
 export default function Signup() {
   const navigation = useRouter();
@@ -47,15 +51,20 @@ export default function Signup() {
               setLoading(false);
             }
           }}
+          validationSchema={
+            Yup.object().shape({
+              username: Yup.string().required("Username required").min(3).max(50),
+              password: Yup.string().matches(
+                passwordRules, { message: "Create a stronger password" })
+                .required().min(8).max(50),
+              email: Yup.string().required().email("Valid email required").max(50),
+            })
+          }
 
         >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
-            <View style={{
-              flex: 1,
-            }}>
-              <View style={{
-                flex: 1,
-              }}>
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <View style={{ flex: 1 }}>
+              <View style={{ flex: 1 }}>
                 <View style={{
                   flex: 5,
                   justifyContent: 'center',
@@ -68,21 +77,62 @@ export default function Signup() {
                       label="Username"
                       value={values.username}
                       placeholder="Username"
+                      rightIcon={
+                        <Ionicons
+                          name="checkmark"
+                          size={18}
+                          color={colors.secondary3}
+                        />
+                      }
+                      rightIconContainerStyle={{
+                        display: `${displayValidationIcon(
+                          errors.username, touched.username, values.username
+                        )}`
+                      }}
+                      errorMessage={`${errors.username ? errors.username : ""}`}
                     />
-                    <Input
-                      onChangeText={handleChange('password')}
-                      onBlur={handleBlur('password')}
-                      label="Password"
-                      value={values.password}
-                      placeholder="Password"
-                      secureTextEntry
-                    />
+                    <View style={{ position: 'relative' }}>
+
+                      <Input
+                        onChangeText={handleChange('password')}
+                        onBlur={handleBlur('password')}
+                        label="Password"
+                        value={values.password}
+                        placeholder="Password"
+                        secureTextEntry
+                        errorMessage={`${errors.password && touched.password ? errors.password : ""}`}
+                        style={{}}
+                      />
+                      <Text style={{
+                        position: 'absolute',
+                        right: 10,
+                        top: 35,
+                        color: colors.secondary3,
+                        fontSize: 11,
+                        display: `${displayValidationIcon(
+                          errors.password, touched.password, values.password
+                        )}`
+                      }}>Strong</Text>
+                    </View>
                     <Input
                       onChangeText={handleChange('email')}
                       onBlur={handleBlur('email')}
                       label="Email Address"
                       value={values.email}
                       placeholder="Email"
+                      rightIcon={
+                        <Ionicons
+                          name="checkmark"
+                          size={18}
+                          color={colors.secondary3}
+                          style={{
+                            display: `${displayValidationIcon(
+                              errors.email, touched.email, values.email
+                            )}`
+                          }}
+                        />
+                      }
+                      errorMessage={`${errors.email && touched.email ? errors.email : ""}`}
                     />
                   </View>
                   <View>
