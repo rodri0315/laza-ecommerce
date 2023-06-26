@@ -1,91 +1,48 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Formik, useFormik, useFormikContext } from 'formik';
+import { Formik } from 'formik';
 import { Input, Switch, Text } from '@rneui/themed';
-import { supabaseClient } from './config/supabase-client';
-import { useRouter, Link } from 'expo-router';
-import colors from './config/colors';
+import { supabaseClient } from '../config/supabase-client';
+import { Link, useRouter } from 'expo-router';
+import colors from '../config/colors';
 import { Session } from '@supabase/supabase-js';
-import BackButton from './components/BackButton';
+import BackButton from '../components/BackButton';
+import * as Yup from "yup";
+import { Ionicons } from '@expo/vector-icons';
+import { passwordRules } from '../helpers/constants';
+import { displayValidationIcon } from '../helpers/helpers';
 
-export default function Login() {
+export default function ResetPassword() {
   const navigation = useRouter();
 
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
   const [session, setSession] = useState<Session | null>()
   const [loading, setLoading] = useState(false);
-
-  // const { handleSubmit } = useFormikContext();
-
-  // const formik = useFormik({
-  //   initialValues: {
-  //     username: '',
-  //     password: '',
-  //     confirmPassword: '',
-  //   },
-  //   onSubmit: async (values) => {
-  //     alert(JSON.stringify(values, null, 2));
-  //     // setLoading(true);
-  //     // try {
-  //     //   const { error } = await supabaseClient.auth.signInWithPassword({
-  //     //     email,
-  //     //     password
-  //     //   })
-  //     //   if (error) throw error
-  //     //   navigation.replace("/");
-  //     // } catch (err) {
-  //     //   throw err;
-  //     // } finally {
-  //     //   setLoading(false);
-  //     // }
-  //   },
-  // });
-
-  // const Login = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const { error } = await supabaseClient.auth.signInWithPassword({
-  //       email,
-  //       password
-  //     })
-  //     if (error) throw error
-  //     navigation.replace("/");
-  //   } catch (err) {
-  //     throw err;
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
 
   return (
     <View style={styles.container}>
       <View style={styles.topHeader}>
         <BackButton />
-        <View
-          style={{
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={styles.header}>Welcome</Text>
-          <Text style={{}}>Please enter your data to continue</Text>
-        </View>
+        <Text style={styles.header}>New Password</Text>
       </View>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 5 }}>
         <Formik
-          initialValues={{ password: '', confirmPassword: '', username: '' }}
+          initialValues={{ password: '', confirmPassword: '' }}
           onSubmit={async (values) => {
-            alert(JSON.stringify(values, null, 2));
-            // const { error } = await supabaseClient.auth.signInWithPassword(values);
-            // if (error) console.log('Error: ', error);
             setLoading(true);
             try {
-              const { error } = await supabaseClient.auth.signInWithPassword({
-                email: values.username,
-                password: values.password
-              })
-              if (error) throw error
+              const { error } = await supabaseClient.auth.signUp({
+                email: values.email,
+                password: values.password,
+                options: {
+                  data: {
+                    username: values.username,
+                  },
+                },
+              });
+              if (error) console.log('Error: ', error);
               navigation.replace("/");
             } catch (err) {
               throw err;
@@ -93,28 +50,32 @@ export default function Login() {
               setLoading(false);
             }
           }}
+          validationSchema={
+            Yup.object().shape({
+              password: Yup.string().matches(
+                passwordRules, { message: "Create a stronger password" })
+                .required().min(8).max(50),
+              confirmPassword: Yup.string().matches(
+                passwordRules, { message: "Create a stronger password" })
+                .oneOf([Yup.ref("password")], "Passwords must match")
+                .required().min(8).max(50),
+            })
+          }
 
         >
-          {({ handleChange, handleBlur, handleSubmit, values }) => (
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View style={{
               flex: 1,
             }}>
               <View style={{
-                // alignSelf: 'center',
                 flex: 1,
               }}>
                 <View style={{
                   flex: 5,
                   justifyContent: 'center',
+                  paddingHorizontal: 10,
                 }}>
                   <View>
-                    <Input
-                      onChangeText={handleChange('username')}
-                      onBlur={handleBlur('username')}
-                      label="Username"
-                      value={values.username}
-                      placeholder="Username"
-                    />
                     <Input
                       onChangeText={handleChange('password')}
                       onBlur={handleBlur('password')}
@@ -130,6 +91,19 @@ export default function Login() {
                       value={values.confirmPassword}
                       placeholder="Password"
                       secureTextEntry
+                      rightIcon={
+                        <Ionicons
+                          name="checkmark"
+                          size={18}
+                          color={colors.secondary3}
+                        />
+                      }
+                      rightIconContainerStyle={{
+                        display: `${displayValidationIcon(
+                          errors.confirmPassword, touched.confirmPassword, values.confirmPassword
+                        )}`
+                      }}
+                      errorMessage={`${errors.confirmPassword ? errors.confirmPassword : ""}`}
                     />
                   </View>
                   <View>
@@ -159,29 +133,17 @@ export default function Login() {
                   flex: 1,
                   justifyContent: 'flex-end',
                 }}>
-
-                  <View style={{
-                    padding: 20,
-                  }}>
-                    <View style={{}}>
-
-                      <Text style={styles.termsText}>
-                        {'By connecting your account confirm that you agree with our '}
-                        <Link href="/login" style={{ color: colors.dkGreyBg }}>Term and Condition</Link>
-                      </Text>
-                    </View>
-                  </View>
                   <TouchableOpacity
                     onPress={handleSubmit}
                     style={{
-                      minHeight: '10%',
+                      minHeight: '12%',
                       marginHorizontal: -20,
                       flexDirection: 'row',
                       justifyContent: 'center',
                       backgroundColor: colors.primary,
                       paddingTop: 20,
                     }}>
-                    <Text style={styles.accountText}>Login</Text>
+                    <Text style={styles.accountText}>Sign Up</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -210,6 +172,12 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
+    alignSelf: 'center',
+  },
+  subtitle: {
+    fontSize: 15,
+    color: colors.grey3,
+    alignSelf: 'center',
   },
   accountText: {
     color: 'white',
@@ -223,11 +191,6 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     color: colors.red,
-  },
-  termsText: {
-    fontSize: 13,
-    color: colors.dkGreyBg,
-    textAlign: 'center',
-  },
+  }
 });
 
