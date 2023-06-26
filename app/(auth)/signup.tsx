@@ -11,15 +11,15 @@ import * as Yup from "yup";
 import { Ionicons } from '@expo/vector-icons';
 import { passwordRules } from '../helpers/constants';
 import { displayValidationIcon } from '../helpers/helpers';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Signup() {
   const navigation = useRouter();
 
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-
-  const [session, setSession] = useState<Session | null>()
   const [loading, setLoading] = useState(false);
+  const { SignIn } = useAuth();
 
   return (
     <View style={styles.container}>
@@ -34,7 +34,7 @@ export default function Signup() {
           onSubmit={async (values) => {
             setLoading(true);
             try {
-              const { error } = await supabaseClient.auth.signUp({
+              const { error, data } = await supabaseClient.auth.signUp({
                 email: values.email,
                 password: values.password,
                 options: {
@@ -44,7 +44,7 @@ export default function Signup() {
                 },
               });
               if (error) console.log('Error: ', error);
-              // navigation.replace("/");
+              SignIn(data.session)
             } catch (err) {
               throw err;
             } finally {
