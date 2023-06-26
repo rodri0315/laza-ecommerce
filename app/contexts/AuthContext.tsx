@@ -8,8 +8,8 @@ const AuthContext = createContext<{
   session: Session | null | undefined,
   user: User | null | undefined,
   signOut: () => void,
-  SignIn: (user: Session) => void
-}>({ session: null, user: null, signOut: () => { }, SignIn: (user: Session) => { } });
+  SignIn: (user: Session | null | undefined) => void
+}>({ session: null, user: null, signOut: () => { }, SignIn: () => { } });
 
 // This hook can be used to access the user info.
 export function useAuth() {
@@ -22,12 +22,9 @@ function useProtectedRoute(user: Session | null | undefined) {
   const router = useRouter();
   const navigationState = useRootNavigationState();
 
-  // debugger
-  console.log('segments', segments)
-  console.log('user', user)
 
   useEffect(() => {
-    console.log('AUTH useEffect')
+
     if (!navigationState?.key) {
       // Temporary fix for router not being ready.
       return;
@@ -39,12 +36,9 @@ function useProtectedRoute(user: Session | null | undefined) {
       !user &&
       !inAuthGroup
     ) {
-      console.log('not signed in and not in auth group')
       // Redirect to the sign-in page.
       router.replace("/signin")
-      // router.replace("/sign-in");
     } else if (user && inAuthGroup) {
-      console.log('signed in and in auth group')
       // Redirect away from the sign-in page.
       router.replace("/(home)/home");
     }
