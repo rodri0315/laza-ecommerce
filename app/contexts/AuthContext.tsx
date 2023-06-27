@@ -40,7 +40,7 @@ function useProtectedRoute(user: Session | null | undefined) {
       router.replace("/signin")
     } else if (user && inAuthGroup) {
       // Redirect away from the sign-in page.
-      router.replace("/(home)/home");
+      router.replace("/(tabs)/home");
     }
   }, [user, segments, navigationState?.key]);
 }
@@ -73,9 +73,9 @@ export const AuthProvider = ({ children }: any) => {
     setData();
     console.log('session', session)
 
-    // return () => {
-    //   listener?.subscription.unsubscribe();
-    // };
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
   }, []);
 
 
