@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import theme from './config/theme';
 import { AuthProvider } from './contexts/AuthContext';
 import { Slot } from 'expo-router';
+import { ProductProvider } from './contexts/ProductContext';
 
 
 export default function App() {
@@ -18,8 +19,10 @@ export default function App() {
       <SafeAreaProvider>
         <AuthProvider>
           <ThemeProvider theme={theme}>
-            <StatusBar />
-            <Slot />
+            <ProductProvider>
+              <StatusBar />
+              <Slot />
+            </ProductProvider>
           </ThemeProvider>
         </AuthProvider>
       </SafeAreaProvider>
