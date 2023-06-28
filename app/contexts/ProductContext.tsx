@@ -14,6 +14,15 @@ const ProductContext = createContext<ProductContextProps>({
   products: [],
   brands: []
 });
+
+type CurrentProductContextType = {
+  currentProduct: Product | null;
+  setCurrentProduct: React.Dispatch<React.SetStateAction<Product | null>>
+}
+
+const CurrentProductContext = createContext<CurrentProductContextType>({
+  currentProduct: null,
+  setCurrentProduct: () => { }
 });
 
 // Product interface
@@ -37,12 +46,15 @@ export function useProducts() {
   return useContext(ProductContext);
 }
 
+export function useCurrentProduct() {
+  return useContext(CurrentProductContext);
+}
+
 export const ProductProvider: React.FC = ({ children }: any) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const { user, session } = useAuth();
-  // console.log('user', user)
-  console.log('session', session)
   const token = `Bearer ${session?.access_token}`;
   useEffect(() => {
     const fetchProducts = async () => {
@@ -50,14 +62,13 @@ export const ProductProvider: React.FC = ({ children }: any) => {
         const {
           data: { session }, error
         } = await supabaseClient.auth.getSession();
-        console.log('session in Products', session)
         const token = `Bearer ${session?.access_token}`;
         const response = await api.get('/products?select=*', {
           headers: {
             'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
             'Authorization': token,
           }
-        }); // Replace with your API endpoint
+        });
         const brands = await api.get('/brands?select=*', {
           headers: {
             'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
@@ -77,6 +88,9 @@ export const ProductProvider: React.FC = ({ children }: any) => {
 
   return (
     <ProductContext.Provider value={{ products, brands }}>
+      <CurrentProductContext.Provider value={{ currentProduct, setCurrentProduct }} >
+        {children}
+      </CurrentProductContext.Provider>
     </ProductContext.Provider>
   );
 };
