@@ -85,7 +85,7 @@ export default function Login() {
                   </View>
                   <View>
                     <TouchableOpacity
-                      onPress={() => navigation.push("/forgot-password")}
+                      onPress={() => navigation.push("/resetPassword")}
                       style={{
                         flexDirection: 'row',
                         justifyContent: 'flex-end',
