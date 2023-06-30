@@ -1,7 +1,7 @@
 // react native screen with title 
 
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button, Card, Image, Input, SearchBar } from '@rneui/themed';
 import { useProducts } from '../../contexts/ProductContext';
@@ -9,13 +9,17 @@ import MenuButton from '../../components/MenuButton';
 import CartButton from '../../components/CartButton';
 import colors from '../../config/colors';
 import ProductCard from '../../components/ProductCard';
+import { useRouter } from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Home() {
 
   const { products, brands } = useProducts();
 
-  const { user, session, signOut } = useAuth();
+  const { user } = useAuth();
+
+  const router = useRouter();
 
 
   return (
@@ -26,11 +30,9 @@ export default function Home() {
             <MenuButton />
             <CartButton />
           </View>
-
         </View>
-        <View
-          style={{}}
-        >
+
+        <View>
           <Text style={styles.header}>Hello</Text>
           <Text style={styles.subtitle}>{user?.email}</Text>
           <Text style={styles.subtitle}>Welcome to Laza</Text>
@@ -38,9 +40,17 @@ export default function Home() {
         <View style={styles.searchBar}>
           {/* Search bar for products */}
           <SearchBar
-            placeholder="Search"
+            placeholder="Search..."
             leftIcon={{ name: 'search' }}
+            containerStyle={styles.searchBarContainer}
+            inputContainerStyle={styles.searchBarInputContainer}
           />
+          {/* microphone icon button */}
+          <TouchableOpacity
+            style={styles.microphoneButton}
+          >
+            <MaterialCommunityIcons name="microphone-outline" size={24} color={colors.white} />
+          </TouchableOpacity>
         </View>
 
         {/* Choose brand section */}
@@ -50,7 +60,7 @@ export default function Home() {
             <Text style={styles.sectionSubtitle}>View All</Text>
           </View>
           <ScrollView horizontal>
-            {/* list of brands */}
+            {/* list of brands, create own component */}
             {
               brands.map((brand, index) => {
                 return (
@@ -61,11 +71,11 @@ export default function Home() {
                     padding: 10,
                     marginHorizontal: 5,
                   }}>
-                    <View style={{
-                      // width: 40,
-                      // height: 40,
-                      // backgroundColor: colors.white,
-                    }}>
+                    <TouchableOpacity
+                      onPress={() => router.push({
+                        pathname: '/(tabs)/home/brandProducts',
+                      })}
+                    >
                       <Image source={{
                         uri: brand.logo_url ? brand.logo_url : 'https://via.placeholder.com/150',
                       }}
@@ -81,7 +91,7 @@ export default function Home() {
                           borderRadius: 10,
                         }}
                       />
-                    </View>
+                    </TouchableOpacity>
                     <Text style={{
                       marginLeft: 10,
                       alignSelf: 'center',
@@ -140,6 +150,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     marginTop: 20,
+    flexDirection: 'row',
   },
   brandSection: {
     flexDirection: 'row',
@@ -162,5 +173,25 @@ const styles = StyleSheet.create({
   cardList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  searchBarContainer: {
+    backgroundColor: colors.white,
+    borderTopColor: colors.white,
+    borderBottomColor: colors.white,
+    flexGrow: 1,
+  },
+  searchBarInputContainer: {
+    borderRadius: 10,
+  },
+  microphoneButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    padding: 10,
+    marginLeft: 5,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
   },
 });
