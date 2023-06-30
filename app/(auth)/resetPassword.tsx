@@ -31,24 +31,7 @@ export default function ResetPassword() {
         <Formik
           initialValues={{ password: '', confirmPassword: '' }}
           onSubmit={async (values) => {
-            setLoading(true);
-            try {
-              const { error } = await supabaseClient.auth.signUp({
-                email: values.email,
-                password: values.password,
-                options: {
-                  data: {
-                    username: values.username,
-                  },
-                },
-              });
-              if (error) console.log('Error: ', error);
-              navigation.replace("/");
-            } catch (err) {
-              throw err;
-            } finally {
-              setLoading(false);
-            }
+            navigation.replace('login');
           }}
           validationSchema={
             Yup.object().shape({
@@ -83,6 +66,19 @@ export default function ResetPassword() {
                       value={values.password}
                       placeholder="Password"
                       secureTextEntry
+                      rightIcon={
+                        <Ionicons
+                          name="checkmark"
+                          size={18}
+                          color={colors.secondary3}
+                        />
+                      }
+                      rightIconContainerStyle={{
+                        display: `${displayValidationIcon(
+                          errors.password, touched.password, values.password
+                        )}`
+                      }}
+                      errorMessage={`${errors.password ? errors.password : ""}`}
                     />
                     <Input
                       onChangeText={handleChange('confirmPassword')}
@@ -106,33 +102,13 @@ export default function ResetPassword() {
                       errorMessage={`${errors.confirmPassword ? errors.confirmPassword : ""}`}
                     />
                   </View>
-                  <View>
-                    <TouchableOpacity
-                      onPress={() => navigation.push("/forgot-password")}
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        padding: 10,
-                        paddingBottom: 40,
-                        paddingTop: 20,
-                      }}>
-                      <Text style={styles.forgotPassword}>Forgot Password?</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.toggle}>
-                    <Text>Remember me</Text>
-                    <Switch
-                      onValueChange={toggleSwitch}
-                      value={isEnabled}
-                    />
-                  </View>
-
                 </View>
 
                 <View style={{
                   flex: 1,
                   justifyContent: 'flex-end',
                 }}>
+                  <Text style={styles.text}>Please write your new password.</Text>
                   <TouchableOpacity
                     onPress={handleSubmit}
                     style={{
@@ -143,7 +119,7 @@ export default function ResetPassword() {
                       backgroundColor: colors.primary,
                       paddingTop: 20,
                     }}>
-                    <Text style={styles.accountText}>Sign Up</Text>
+                    <Text style={styles.accountText}>Reset Password</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -191,6 +167,12 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     color: colors.red,
-  }
+  },
+  text: {
+    fontSize: 13,
+    color: colors.grey3,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
 });
 

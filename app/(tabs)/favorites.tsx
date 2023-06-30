@@ -4,23 +4,34 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@rneui/themed';
+import { useProducts } from '../contexts/ProductContext';
 
-export default function Home() {
+export default function Cart() {
+
+  const { products } = useProducts();
 
   const { user, session, signOut } = useAuth();
 
-  console.log('HOME: ' + user)
-  console.log('HOME: Session ' + JSON.stringify(session))
+
   return (
     <View style={styles.container}>
       <View style={styles.topHeader}>
         <View
           style={{}}
         >
-          <Text style={styles.header}>Hello</Text>
-          <Text style={{}}>Welcome to Laza</Text>
-          <Text>{user?.email}</Text>
+          <Text style={styles.header}>Favorites</Text>
         </View>
+      </View>
+      <View>
+        {/* list of products */}
+        {
+          products.map((product, index) => {
+            return (
+              <Text key={index}>{product.name}</Text>
+            )
+          }
+          )
+        }
       </View>
       <Button title="Sign Out" onPress={signOut} />
     </View>
