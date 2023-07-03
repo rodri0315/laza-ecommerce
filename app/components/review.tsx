@@ -2,13 +2,14 @@ import React from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
+import { Review as ReviewRowProps } from '../contexts/ProductContext';
 
 interface ReviewProps {
-  // props
-
+  review: ReviewRowProps;
 }
 
-const Review: React.FC<ReviewProps> = () => {
+const Review: React.FC<ReviewProps> = ({ review }) => {
+  if (!review) return null;
   return (
     <View style={styles.reviewsList}>
       <View style={styles.review}>
@@ -21,7 +22,7 @@ const Review: React.FC<ReviewProps> = () => {
               resizeMode='cover'
             />
             <View style={styles.reviewUserInfo}>
-              <Text style={styles.reviewUserName}>Ronald Richards</Text>
+              <Text style={styles.reviewUserName}>{review?.user_name}</Text>
               <View style={styles.reviewDate}>
                 {/* clock logo */}
                 <MaterialCommunityIcons name="clock-outline" size={16} color={colors.grey3} />
@@ -45,7 +46,7 @@ const Review: React.FC<ReviewProps> = () => {
           </View>
         </View>
         <View style={styles.reviewBody}>
-          <Text style={styles.reviewText}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque malesuada eget vitae amet...</Text>
+          <Text style={styles.reviewText}>{review?.comment}</Text>
         </View>
       </View>
     </View>
