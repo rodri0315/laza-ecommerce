@@ -13,7 +13,7 @@ export default function ProductDetail(props) {
   const router = useRouter();
   const params = useLocalSearchParams()
   const { currentProduct: product } = useCurrentProduct()
-  const { brands } = useProducts();
+  const { brands, reviews } = useProducts();
   return (
     <ScrollView style={{
       flex: 1,
@@ -122,7 +122,7 @@ export default function ProductDetail(props) {
           </View>
           {/* Review list */}
           <View style={styles.reviewList}>
-            <Review />
+            <Review review={reviews[reviews.length - 1]} />
           </View>
           {/* Total Price */}
           <View style={styles.totalPrice}>
