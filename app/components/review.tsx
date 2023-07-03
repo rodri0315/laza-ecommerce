@@ -3,6 +3,7 @@ import { View, Image, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 import { Review as ReviewRowProps } from '../contexts/ProductContext';
+import dayjs from 'dayjs';
 
 interface ReviewProps {
   review: ReviewRowProps;
@@ -26,7 +27,7 @@ const Review: React.FC<ReviewProps> = ({ review }) => {
               <View style={styles.reviewDate}>
                 {/* clock logo */}
                 <MaterialCommunityIcons name="clock-outline" size={16} color={colors.grey3} />
-                <Text style={styles.reviewDateText}>13 Sep, 2020</Text>
+                <Text style={styles.reviewDateText}>{dayjs(review?.created_at).format('D MMM, YYYY')}</Text>
               </View>
             </View>
           </View>
@@ -99,10 +100,12 @@ const styles = StyleSheet.create({
   },
   reviewDate: {
     flexDirection: 'row',
+    marginTop: 5,
   },
   reviewDateText: {
     fontSize: 13,
     color: colors.grey3,
+    marginLeft: 5,
   },
   reviewBody: {},
   reviewText: {
