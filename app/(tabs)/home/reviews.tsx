@@ -6,9 +6,11 @@ import colors from '../../config/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useProducts } from '../../contexts/ProductContext';
 
 export default function Reviews() {
   const router = useRouter();
+  const { reviews } = useProducts();
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -42,13 +44,9 @@ export default function Reviews() {
         </View>
 
         <ScrollView style={styles.reviewListContainer}>
-          <Review />
-          <Review />
-          <Review />
-          <Review />
-          <Review />
-          <Review />
-          <Review />
+          {reviews.map((review) => (
+            <Review key={review.id} review={review} />
+          ))}
         </ScrollView>
       </View>
     </SafeAreaView>
