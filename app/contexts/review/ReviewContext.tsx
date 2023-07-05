@@ -40,49 +40,29 @@ export const useReviews = (): [ReviewContextProps, React.Dispatch<any>] => {
 };
 
 // Add Contact
-export const addReview = async (dispatch, review) => {
-  // const {
-  //   data: { session }, error
-  // } = await supabaseClient.auth.getSession();
-  // const token = `Bearer ${session?.access_token}`;
+export const addReview = async (dispatch, review, router) => {
   try {
-    // const res = await axios.post('reviews?TODO:url', review);
-    // try {
-    //   const {
-    //     data: { session }, error
-    //   } = await supabaseClient.auth.getSession();
-    //   const token = `Bearer ${session?.access_token}`;
-    //   console.log('token', token)
-    //   console.log(GET_REVIEWS, id)
-    //   const res = await api.post(`/reviews`, {
-
-    //   }, {
-    //     headers: {
-    //       'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
-    //       'Authorization': token,
-    //       'Content-Type': 'application/json',
-    //       'Prefer': 'return=minimal'
-    //     }
-    //   });
-
-    //   dispatch({
-    //     type: GET_REVIEWS,
-    //     payload: res.data
-    //   });
-    // } catch (err) {
-    //   console.error('Error fetching reviews:', err);
-    //   // dispatch({
-    //   //   type: REVIEW_ERROR,
-    //   //   payload: err.response.msg
-    //   // });
-    // }
-    console.log('REVIEW', review)
-
-    // dispatch({
-    //   type: ADD_REVIEW,
-    //   payload: res.data
-    // });
+    const {
+      data: { session }, error
+    } = await supabaseClient.auth.getSession();
+    const token = `Bearer ${session?.access_token}`;
+    const res = await api.post('/reviews', { ...review },
+      {
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
+          'Authorization': token,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        }
+      }
+    );
+    dispatch({
+      type: ADD_REVIEW,
+      payload: JSON.parse(res.config.data)
+    });
+    router.back()
   } catch (err) {
+    console.error('Error creating review:', err.response);
     dispatch({
       type: REVIEW_ERROR,
       payload: err.response.msg
@@ -121,6 +101,13 @@ export const getReviews = async (dispatch, id) => {
 }
 
 const ReviewState = ({ children }: any) => {
+
+  const initialState: ReviewContextProps = {
+    reviews: [],
+    // current: null,
+    // filtered: null,
+    error: null
+  };
 
   const [state, dispatch] = useReducer(reviewReducer, initialState);
 
