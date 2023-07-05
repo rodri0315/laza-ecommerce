@@ -99,6 +99,7 @@ export default function ProductDetail() {
               {sizes.map((size, index) => {
                 return (
                   <View
+                    key={index}
                     style={styles.sizeContainer}
                   >
                     <Text style={styles.size}>{size}</Text>
