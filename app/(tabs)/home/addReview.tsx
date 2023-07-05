@@ -5,11 +5,13 @@ import BackButton from '../../components/BackButton';
 import colors from '../../config/colors';
 import { Input } from '@rneui/base';
 import { Slider } from '@rneui/themed';
+import { addReview, useReviews } from '../../contexts/review/ReviewContext';
 
 export default function AddReview() {
 
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState(0);
+  const [, reviewDispatch] = useReviews();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -23,21 +25,14 @@ export default function AddReview() {
         <View style={styles.backButton}>
           <BackButton />
         </View>
-        {/* form name, how was your experience? star rating slider */}
       </View>
-      {/* <View style={styles.formContainer}> */}
       <Formik
-        initialValues={{ name: '', text: '', email: 'jorge@headway.io', rating: value }}
+        initialValues={{ name: '', text: '', email: 'jorge@headway.io' }}
         onSubmit={async (values) => {
           setLoading(true);
           try {
-            // const { data, error } = await supabaseClient.auth.signInWithPassword({
-            //   email: values.email,
-            //   password: values.password
-            // })
             // if (error) throw error
-
-            // handleSignIn(data.session)
+            addReview(reviewDispatch, { ...values, rating: value });
           } catch (err) {
             throw err;
           } finally {
@@ -54,8 +49,8 @@ export default function AddReview() {
               <View style={styles.formContainer}>
                 <View style={styles.inputsContainer}>
                   <Input
-                    onChangeText={handleChange('email')}
-                    onBlur={handleBlur('email')}
+                    onChangeText={handleChange('name')}
+                    onBlur={handleBlur('name')}
                     label="Name"
                     value={values.name}
                     placeholder="Type your name"
@@ -64,8 +59,8 @@ export default function AddReview() {
                     labelStyle={styles.label}
                   />
                   <Input
-                    onChangeText={handleChange('password')}
-                    onBlur={handleBlur('password')}
+                    onChangeText={handleChange('text')}
+                    onBlur={handleBlur('text')}
                     label="How was your experience?"
                     value={values.text}
                     placeholder="Describe your experience?"
@@ -107,7 +102,10 @@ export default function AddReview() {
               </View>
             </View>
             {/* submit button */}
-            <TouchableOpacity style={styles.addReviewButton}>
+            <TouchableOpacity
+              onPress={handleSubmit}
+              style={styles.addReviewButton}
+            >
               <Text style={styles.addReviewButtonText}>Submit Review</Text>
             </TouchableOpacity>
           </View>
