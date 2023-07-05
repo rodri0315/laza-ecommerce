@@ -9,7 +9,7 @@ export default function ProductCard({ product, index }: { product: Product, inde
   const isEven = index % 2 === 0;
   const { setCurrentProduct } = useCurrentProduct();
   return (
-    <View style={styles.cardContainer}>
+    <View style={styles.cardContainer} >
       <TouchableOpacity
         onPress={() => {
           setCurrentProduct(product);
