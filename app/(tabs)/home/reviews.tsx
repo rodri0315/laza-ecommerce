@@ -7,10 +7,13 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useProducts } from '../../contexts/ProductContext';
+import { useReviews } from '../../contexts/review/ReviewContext';
 
 export default function Reviews() {
   const router = useRouter();
-  const { reviews } = useProducts();
+  const [reviewState,] = useReviews();
+
+  const { reviews } = reviewState;
   return (
     <SafeAreaView style={styles.container}>
       <View>
