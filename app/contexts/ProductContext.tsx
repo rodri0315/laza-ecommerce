@@ -9,13 +9,11 @@ import { Database } from '../types/supabase';
 interface ProductContextProps {
   products: Product[];
   brands: Brand[];
-  reviews: Review[];
 }
 
 const ProductContext = createContext<ProductContextProps>({
   products: [],
   brands: [],
-  reviews: [],
 });
 
 type CurrentProductContextType = {
@@ -37,6 +35,7 @@ export interface Product {
   price: number;
   is_sold_out: boolean;
   image_url: string;
+  image_urls: string[];
 }
 
 export interface Brand {
@@ -93,37 +92,8 @@ export const ProductProvider: React.FC = ({ children }: any) => {
     fetchProducts();
   }, []);
 
-  // fetch reviews by product id
-  useEffect(() => {
-    const fetchReviews = async () => {
-      console.log('currentProduct', currentProduct)
-      try {
-        // const {
-        //   data: { session }, error
-        // } = await supabaseClient.auth.getSession();
-        // const token = `Bearer ${session?.access_token}`;
-        // const token = session?.access_token;
-        // console.log('Review token', token)
-        const reviews = await api.get(`/reviews?product_id=eq.${currentProduct?.id}&select=*`, {
-          headers: {
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
-            'Authorization': token,
-          }
-        });
-        // if (error) throw error;
-        console.log('reviews', reviews.data)
-        setReviews(reviews.data);
-      } catch (error) {
-        console.error('Error fetching reviews:', error);
-      }
-    };
-
-    if (currentProduct) fetchReviews();
-    // fetchReviews();
-  }, [currentProduct]);
-
   return (
-    <ProductContext.Provider value={{ products, brands, reviews }}>
+    <ProductContext.Provider value={{ products, brands }}>
       <CurrentProductContext.Provider value={{ currentProduct, setCurrentProduct }} >
         {children}
       </CurrentProductContext.Provider>
