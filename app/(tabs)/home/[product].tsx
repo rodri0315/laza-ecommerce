@@ -1,6 +1,6 @@
 import { Image } from '@rneui/themed';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useCurrentProduct, useProducts } from '../../contexts/ProductContext';
 import BackButton from '../../components/BackButton';
@@ -8,12 +8,18 @@ import CartButton from '../../components/CartButton';
 import colors from '../../config/colors';
 import { sizes } from '../../helpers/constants';
 import Review from '../../components/review';
+import { getReviews, useReviews } from '../../contexts/review/ReviewContext';
 
-export default function ProductDetail(props) {
+export default function ProductDetail() {
   const router = useRouter();
-  const params = useLocalSearchParams()
   const { currentProduct: product } = useCurrentProduct()
-  const { brands, reviews } = useProducts();
+  const [reviewState, reviewDispatch] = useReviews();
+  const { reviews } = reviewState;
+
+  useEffect(() => {
+    getReviews(reviewDispatch, product?.id);
+  }, [reviewDispatch]);
+
   return (
     <ScrollView style={{
       flex: 1,
@@ -56,30 +62,26 @@ export default function ProductDetail(props) {
             <ScrollView horizontal>
               {/* list of brands */}
               {
-                brands.map((brand, index) => {
+                product?.image_urls?.map((imageUrl, index) => {
                   return (
                     <View key={index} style={{
                       flexDirection: 'row',
                       backgroundColor: colors.grey5,
-                      borderRadius: 10,
                       marginHorizontal: 5,
                     }}>
-                      <View style={{}}>
-                        <Image source={{
-                          uri: brand.logo_url ? brand.logo_url : 'https://via.placeholder.com/150',
+                      <Image source={{
+                        uri: imageUrl ? imageUrl : 'https://via.placeholder.com/150',
+                      }}
+                        style={{
+                          width: 77,
+                          height: 77,
+                          borderRadius: 10,
                         }}
-                          style={{
-                            width: 77,
-                            height: 77,
-                            borderRadius: 10,
-                          }}
-                          resizeMode='contain'
-                          containerStyle={{
-                            backgroundColor: colors.white,
-                            borderRadius: 10,
-                          }}
-                        />
-                      </View>
+                        resizeMode='cover'
+                        containerStyle={{
+                          backgroundColor: colors.white,
+                        }}
+                      />
                     </View>
                   )
                 }
