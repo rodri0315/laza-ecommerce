@@ -114,7 +114,7 @@ export default function Home() {
       <ScrollView contentContainerStyle={styles.cardList}>
         {
           products.map((product, index) => {
-            return <ProductCard key={index} product={product} index={index} />
+            return <ProductCard key={product.id} product={product} index={index} />
           })
         }
       </ScrollView>
