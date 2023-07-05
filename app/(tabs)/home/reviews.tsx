@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import Review from '../../components/review';
 import BackButton from '../../components/BackButton';
@@ -6,14 +6,18 @@ import colors from '../../config/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useProducts } from '../../contexts/ProductContext';
-import { useReviews } from '../../contexts/review/ReviewContext';
+import { useCurrentProduct, useProducts } from '../../contexts/ProductContext';
+import { getReviews, useReviews } from '../../contexts/review/ReviewContext';
 
 export default function Reviews() {
+  const { currentProduct: product } = useCurrentProduct()
   const router = useRouter();
-  const [reviewState,] = useReviews();
-
+  const [reviewState, reviewDispatch] = useReviews();
   const { reviews } = reviewState;
+
+  useEffect(() => {
+  }, [reviews]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
