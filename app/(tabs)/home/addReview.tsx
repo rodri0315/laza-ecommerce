@@ -6,11 +6,16 @@ import colors from '../../config/colors';
 import { Input } from '@rneui/base';
 import { Slider } from '@rneui/themed';
 import { addReview, useReviews } from '../../contexts/review/ReviewContext';
+import { useCurrentProduct } from '../../contexts/ProductContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useRouter } from 'expo-router';
 
 export default function AddReview() {
-
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState(0);
+  const { currentProduct } = useCurrentProduct();
+  const { user } = useAuth();
   const [, reviewDispatch] = useReviews();
 
   return (
@@ -27,13 +32,21 @@ export default function AddReview() {
         </View>
       </View>
       <Formik
-        initialValues={{ name: '', text: '', email: 'jorge@headway.io' }}
+        initialValues={{
+          user_name: '',
+          comment: '',
+          product_id: currentProduct?.id,
+          user_id: user?.id,
+        }}
         onSubmit={async (values) => {
           setLoading(true);
           try {
             // if (error) throw error
-            addReview(reviewDispatch, { ...values, rating: value });
+            const newReview = await addReview(reviewDispatch, { ...values, rating: value }, router);
+            // console.log('New Review', newReview);
+            // newReview ? router.back() : router.push('/(tabs)/home');
           } catch (err) {
+            console.log('Error', err)
             throw err;
           } finally {
             setLoading(false);
@@ -49,20 +62,20 @@ export default function AddReview() {
               <View style={styles.formContainer}>
                 <View style={styles.inputsContainer}>
                   <Input
-                    onChangeText={handleChange('name')}
-                    onBlur={handleBlur('name')}
+                    onChangeText={handleChange('user_name')}
+                    onBlur={handleBlur('user_name')}
                     label="Name"
-                    value={values.name}
+                    value={values.user_name}
                     placeholder="Type your name"
                     inputContainerStyle={styles.input}
                     containerStyle={styles.inputContainer}
                     labelStyle={styles.label}
                   />
                   <Input
-                    onChangeText={handleChange('text')}
-                    onBlur={handleBlur('text')}
+                    onChangeText={handleChange('comment')}
+                    onBlur={handleBlur('comment')}
                     label="How was your experience?"
-                    value={values.text}
+                    value={values.comment}
                     placeholder="Describe your experience?"
                     textAlignVertical='top'
                     inputContainerStyle={[styles.input, styles.reviewInput]}
