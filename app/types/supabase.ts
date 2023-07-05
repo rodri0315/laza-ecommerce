@@ -144,7 +144,7 @@ export interface Database {
           created_at: string | null
           id: number
           product_id: number | null
-          rating: number | null
+          rating: number
           user_id: string | null
           user_name: string | null
         }
