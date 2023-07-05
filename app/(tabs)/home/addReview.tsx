@@ -42,9 +42,7 @@ export default function AddReview() {
           setLoading(true);
           try {
             // if (error) throw error
-            const newReview = await addReview(reviewDispatch, { ...values, rating: value }, router);
-            // console.log('New Review', newReview);
-            // newReview ? router.back() : router.push('/(tabs)/home');
+            addReview(reviewDispatch, { ...values, rating: value }, router);
           } catch (err) {
             console.log('Error', err)
             throw err;
