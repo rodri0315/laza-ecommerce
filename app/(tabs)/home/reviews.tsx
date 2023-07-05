@@ -18,6 +18,22 @@ export default function Reviews() {
   useEffect(() => {
   }, [reviews]);
 
+  const getAverageRating = (): number => {
+    let total = 0;
+    reviews.forEach((review) => {
+      total += review.rating;
+    });
+    return Number((total / reviews.length).toPrecision(2));
+  }
+
+  const getStars = (rating: number) => {
+    const stars = [];
+    for (let i = 0; i < Math.floor(rating); i++) {
+      stars.push(<MaterialCommunityIcons key={i} name="star" size={16} color={colors.orange} />)
+    }
+    return stars;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -30,14 +46,11 @@ export default function Reviews() {
 
         <View style={styles.reviewsInfo}>
           <View style={styles.reviewsRating}>
-            <Text style={styles.reviewsCount}>245 Reviews</Text>
+            <Text style={styles.reviewsCount}>{reviews.length} Reviews</Text>
             <View style={styles.ratingContainer}>
-              <Text style={styles.rating}>4.5</Text>
+              <Text style={styles.rating}>{getAverageRating()}</Text>
               <View style={styles.reviewStars}>
-                <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-                <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-                <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-                <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
+                {getStars(getAverageRating())}
               </View>
 
             </View>
