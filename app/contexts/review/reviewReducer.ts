@@ -5,8 +5,6 @@ import {
 } from '../actionTypes';
 import { ReviewContextProps } from './ReviewContext';
 
-
-
 const reviewReducer = (state: ReviewContextProps, action) => {
   switch (action.type) {
     case GET_REVIEWS:
@@ -17,7 +15,7 @@ const reviewReducer = (state: ReviewContextProps, action) => {
     case ADD_REVIEW:
       return {
         ...state,
-        reviews: [action.payload, ...state.reviews]
+        reviews: [...state.reviews, action.payload]
       };
     case REVIEW_ERROR:
       return {
