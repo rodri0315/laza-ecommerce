@@ -60,8 +60,6 @@ export const ProductProvider: React.FC = ({ children }: any) => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
-  const { user, session } = useAuth();
-  const token = `Bearer ${session?.access_token}`;
   useEffect(() => {
     const fetchProducts = async () => {
       try {
