@@ -15,7 +15,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Home() {
 
-  const { products, brands } = useProducts();
+  const { products, brands, setSelectedBrand } = useProducts();
 
   const { user } = useAuth();
 
@@ -72,9 +72,12 @@ export default function Home() {
                     marginHorizontal: 5,
                   }}>
                     <TouchableOpacity
-                      onPress={() => router.push({
-                        pathname: '/(tabs)/home/brandProducts',
-                      })}
+                      onPress={() => {
+                        setSelectedBrand(brand)
+                        router.push({
+                          pathname: '/(tabs)/home/brandProducts',
+                        })
+                      }}
                     >
                       <Image source={{
                         uri: brand.logo_url ? brand.logo_url : 'https://via.placeholder.com/150',
