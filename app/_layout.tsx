@@ -6,6 +6,7 @@ import theme from './config/theme';
 import { AuthProvider } from './contexts/AuthContext';
 import { Slot } from 'expo-router';
 import { ProductProvider } from './contexts/ProductContext';
+import ReviewState from './contexts/review/ReviewContext';
 
 
 export default function App() {
@@ -20,8 +21,10 @@ export default function App() {
         <AuthProvider>
           <ThemeProvider theme={theme}>
             <ProductProvider>
-              <StatusBar />
-              <Slot />
+              <ReviewState>
+                <StatusBar />
+                <Slot />
+              </ReviewState>
             </ProductProvider>
           </ThemeProvider>
         </AuthProvider>

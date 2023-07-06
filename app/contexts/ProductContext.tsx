@@ -3,6 +3,7 @@ import axios from 'axios';
 import { api } from '../services/api';
 import { useAuth } from './AuthContext';
 import { supabaseClient } from '../config/supabase-client';
+import { Database } from '../types/supabase';
 
 // Create a context for products
 interface ProductContextProps {
@@ -12,7 +13,7 @@ interface ProductContextProps {
 
 const ProductContext = createContext<ProductContextProps>({
   products: [],
-  brands: []
+  brands: [],
 });
 
 type CurrentProductContextType = {
@@ -34,6 +35,7 @@ export interface Product {
   price: number;
   is_sold_out: boolean;
   image_url: string;
+  image_urls: string[];
 }
 
 export interface Brand {
@@ -41,6 +43,9 @@ export interface Brand {
   name: string;
   logo_url: string;
 }
+
+export type Review = Database['public']['Tables']['reviews']['Row']
+
 
 export function useProducts() {
   return useContext(ProductContext);
@@ -53,9 +58,8 @@ export function useCurrentProduct() {
 export const ProductProvider: React.FC = ({ children }: any) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
-  const { user, session } = useAuth();
-  const token = `Bearer ${session?.access_token}`;
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -75,7 +79,7 @@ export const ProductProvider: React.FC = ({ children }: any) => {
             'Authorization': token,
           }
         });
-        // console.log("brands", brands.data)
+        if (error) throw error;
         setBrands(brands.data);
         setProducts(response.data);
       } catch (error) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import Review from '../../components/review';
 import BackButton from '../../components/BackButton';
@@ -6,9 +6,34 @@ import colors from '../../config/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useCurrentProduct, useProducts } from '../../contexts/ProductContext';
+import { getReviews, useReviews } from '../../contexts/review/ReviewContext';
 
 export default function Reviews() {
+  const { currentProduct: product } = useCurrentProduct()
   const router = useRouter();
+  const [reviewState, reviewDispatch] = useReviews();
+  const { reviews } = reviewState;
+
+  useEffect(() => {
+  }, [reviews]);
+
+  const getAverageRating = (): number => {
+    let total = 0;
+    reviews.forEach((review) => {
+      total += review.rating;
+    });
+    return Number((total / reviews.length).toPrecision(2));
+  }
+
+  const getStars = (rating: number) => {
+    const stars = [];
+    for (let i = 0; i < Math.floor(rating); i++) {
+      stars.push(<MaterialCommunityIcons key={i} name="star" size={16} color={colors.orange} />)
+    }
+    return stars;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -21,14 +46,11 @@ export default function Reviews() {
 
         <View style={styles.reviewsInfo}>
           <View style={styles.reviewsRating}>
-            <Text style={styles.reviewsCount}>245 Reviews</Text>
+            <Text style={styles.reviewsCount}>{reviews.length} Reviews</Text>
             <View style={styles.ratingContainer}>
-              <Text style={styles.rating}>4.5</Text>
+              <Text style={styles.rating}>{getAverageRating()}</Text>
               <View style={styles.reviewStars}>
-                <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-                <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-                <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-                <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
+                {getStars(getAverageRating())}
               </View>
 
             </View>
@@ -42,13 +64,9 @@ export default function Reviews() {
         </View>
 
         <ScrollView style={styles.reviewListContainer}>
-          <Review />
-          <Review />
-          <Review />
-          <Review />
-          <Review />
-          <Review />
-          <Review />
+          {reviews.map((review) => (
+            <Review key={review.id} review={review} />
+          ))}
         </ScrollView>
       </View>
     </SafeAreaView>

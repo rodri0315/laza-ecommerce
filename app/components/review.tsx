@@ -2,13 +2,22 @@ import React from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
+import { Review as ReviewRowProps } from '../contexts/ProductContext';
+import dayjs from 'dayjs';
 
 interface ReviewProps {
-  // props
-
+  review: ReviewRowProps;
 }
 
-const Review: React.FC<ReviewProps> = () => {
+const Review: React.FC<ReviewProps> = ({ review }) => {
+  const getStars = (rating: number) => {
+    const stars = [];
+    for (let i = 0; i < Math.floor(rating); i++) {
+      stars.push(<MaterialCommunityIcons key={i} name="star" size={16} color={colors.orange} />)
+    }
+    return stars;
+  }
+  if (!review) return null;
   return (
     <View style={styles.reviewsList}>
       <View style={styles.review}>
@@ -21,31 +30,26 @@ const Review: React.FC<ReviewProps> = () => {
               resizeMode='cover'
             />
             <View style={styles.reviewUserInfo}>
-              <Text style={styles.reviewUserName}>Ronald Richards</Text>
+              <Text style={styles.reviewUserName}>{review?.user_name}</Text>
               <View style={styles.reviewDate}>
-                {/* clock logo */}
                 <MaterialCommunityIcons name="clock-outline" size={16} color={colors.grey3} />
-                <Text style={styles.reviewDateText}>13 Sep, 2020</Text>
+                <Text style={styles.reviewDateText}>{dayjs(review?.created_at).format('D MMM, YYYY')}</Text>
               </View>
             </View>
           </View>
           {/* review rating */}
           <View>
             <View style={styles.reviewHeaderRight}>
-              <Text style={styles.reviewRating}>4.5</Text>
+              <Text style={styles.reviewRating}>{review.rating}</Text>
               <Text style={styles.reviewRatingText}>rating</Text>
-              {/* review stars */}
             </View>
             <View style={styles.reviewStars}>
-              <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-              <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-              <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
-              <MaterialCommunityIcons name="star" size={16} color={colors.orange} />
+              {getStars(review.rating)}
             </View>
           </View>
         </View>
         <View style={styles.reviewBody}>
-          <Text style={styles.reviewText}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque malesuada eget vitae amet...</Text>
+          <Text style={styles.reviewText}>{review?.comment}</Text>
         </View>
       </View>
     </View>
@@ -98,10 +102,12 @@ const styles = StyleSheet.create({
   },
   reviewDate: {
     flexDirection: 'row',
+    marginTop: 5,
   },
   reviewDateText: {
     fontSize: 13,
     color: colors.grey3,
+    marginLeft: 5,
   },
   reviewBody: {},
   reviewText: {
