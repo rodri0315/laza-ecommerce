@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
 import { Formik, useFormik, useFormikContext } from 'formik';
 import BackButton from '../../components/BackButton';
 import colors from '../../config/colors';
 import CartButton from '../../components/CartButton';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Image } from '@rneui/themed';
 import ProductCard from '../../components/ProductCard';
 import { useProducts } from '../../contexts/ProductContext';
@@ -12,40 +13,43 @@ export default function BrandProducts() {
 
   const [loading, setLoading] = useState(false);
 
-  const { brands, products } = useProducts();
+  const { brandProducts: products, selectedBrand: brand } = useProducts();
+
+  useEffect(() => {
+
+  }, [brand, products])
+
+  if (!brand || !products) return null;
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <BackButton />
-        <View>
-          <Image source={{
-            // uri: brand.logo_url ? brand.logo_url : 'https://via.placeholder.com/150',
-            uri: 'https://via.placeholder.com/150',
-          }}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              margin: 6,
-            }}
-            resizeMode='contain'
-            containerStyle={{
-              backgroundColor: colors.white,
-              borderRadius: 10,
-            }}
-          />
-        </View>
+
+        <Image source={{
+          uri: brand?.logo_url ? brand.logo_url : 'https://via.placeholder.com/150',
+        }}
+          style={styles.brandImage}
+          resizeMode='contain'
+          containerStyle={styles.brandImageContainer}
+        />
+
         <CartButton />
       </View>
-      {/* form name, how was your experience? star rating slider */}
       <View style={styles.itemSection}>
-
+        <View style={styles.itemTextContainer}>
+          <Text style={styles.itemTitle}>{products.length} Items</Text>
+          <Text style={styles.itemDescription}>Available in stock</Text>
+        </View>
+        <TouchableOpacity style={styles.sortButton}>
+          <MaterialIcons name="sort" size={18} color="black" />
+          <Text style={styles.sortButtonText}>Sort</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.cardList}>
         {
           products.map((product, index) => {
-            return <ProductCard product={product} index={index} />
+            return <ProductCard key={product.id} product={product} index={index} />
           })
         }
       </ScrollView>
@@ -150,5 +154,42 @@ const styles = StyleSheet.create({
   cardList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  itemSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  itemTextContainer: {},
+  itemTitle: {
+    fontSize: 17,
+    fontWeight: '500',
+  },
+  itemDescription: {
+    fontSize: 15,
+    color: colors.grey3,
+  },
+  sortButton: {
+    flexDirection: 'row',
+    backgroundColor: colors.grey5,
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  sortButtonText: {
+    fontSize: 15,
+    fontWeight: '500',
+    marginLeft: 5,
+  },
+  brandImage: {
+    width: 48,
+    height: 25,
+    margin: 10,
+  },
+  brandImageContainer: {
+    backgroundColor: colors.grey5,
+    borderRadius: 10,
   },
 });
