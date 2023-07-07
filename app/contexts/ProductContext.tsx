@@ -42,6 +42,8 @@ export interface Product {
   is_sold_out: boolean;
   image_url: string;
   image_urls: string[];
+  quantity: number;
+  brand_id: string;
 }
 
 export interface Brand {
