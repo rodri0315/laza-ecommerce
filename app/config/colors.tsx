@@ -9,7 +9,7 @@ export default {
   grey1: '#43484d',
   grey2: '#5e6977',
   grey3: '#8F959E',
-  grey4: '#bdc6cf',
+  grey4: '#DEDEDE',
   grey5: '#F5F6FA', // light grey
   grey6: '#E7E8EA',
   white: '#ffffff',
