@@ -1,19 +1,21 @@
 import { Image } from '@rneui/themed';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
-import { useCurrentProduct, useProducts } from '../../contexts/ProductContext';
+import { useCurrentProduct } from '../../contexts/ProductContext';
 import BackButton from '../../components/BackButton';
 import CartButton from '../../components/CartButton';
 import colors from '../../config/colors';
 import { sizes } from '../../helpers/constants';
 import Review from '../../components/review';
 import { getReviews, useReviews } from '../../contexts/review/ReviewContext';
+import { useCart } from '../../contexts/cart/CartContext';
 
 export default function ProductDetail() {
   const router = useRouter();
   const { currentProduct: product } = useCurrentProduct()
   const [reviewState, reviewDispatch] = useReviews();
+  const { cart, addProductToCart, removeProductFromCart } = useCart();
   const { reviews } = reviewState;
 
   useEffect(() => {
@@ -137,7 +139,10 @@ export default function ProductDetail() {
           </View>
           {/* Add to cart */}
           <View style={styles.addToCart}>
-            <TouchableOpacity style={styles.addToCartButton}>
+            <TouchableOpacity
+              onPress={() => addProductToCart(product)}
+              style={styles.addToCartButton}
+            >
               <Text style={styles.addToCartButtonText}>Add to Cart</Text>
             </TouchableOpacity>
           </View>
