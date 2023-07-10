@@ -16,7 +16,7 @@ export default function Cart() {
   const { products } = useProducts();
 
   const { user, session, signOut } = useAuth();
-  const { cart, removeProductFromCart, getAddresses, addresses } = useCart();
+  const { cart, removeProductFromCart, getAddresses, address } = useCart();
   const router = useRouter();
 
   useEffect(() => {
@@ -110,8 +110,8 @@ export default function Cart() {
             }}
           />
           <View style={styles.addressContainer}>
-            <Text style={styles.addressText}>Chhatak, Sunaonj 12/8AB</Text>
-            <Text style={styles.cityText}>Dhaka, Bangladesh</Text>
+            <Text style={styles.addressText}>{address?.address}</Text>
+            <Text style={styles.cityText}>{address?.city}, {address?.country}</Text>
           </View>
           <View style={styles.checkmark}>
             <Octicons name="check-circle-fill" size={24} color={colors.facebook} />
