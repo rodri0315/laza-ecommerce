@@ -1,5 +1,7 @@
+// react native screen with title 
+
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button, Image } from '@rneui/themed';
 import { useProducts } from '../../contexts/ProductContext';
@@ -7,9 +9,20 @@ import BackButton from '../../components/BackButton';
 import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import colors from '../../config/colors';
+import { useCart } from '../../contexts/cart/CartContext';
+
 export default function Cart() {
 
   const { products } = useProducts();
+
+  const { user, session, signOut } = useAuth();
+  const { cart, removeProductFromCart, getAddresses, addresses } = useCart();
+  const router = useRouter();
+
+  useEffect(() => {
+    getAddresses();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{}}>
@@ -20,60 +33,72 @@ export default function Cart() {
           <BackButton />
         </View>
       </View>
-      <View style={styles.cardContainer}>
-        <Image
-          source={{ uri: 'https://picsum.photos/200/300' }}
-          style={{
-            width: 100,
-            height: 100,
-            margin: 10,
-            borderRadius: 10,
-          }}
-        />
-        <View style={{
-          flexDirection: 'column',
-          justifyContent: 'space-evenly',
-          margin: 10,
-        }}>
-          <View>
-            <Text style={styles.productText}>{products[0].type}</Text>
-            <Text style={styles.productText}>{products[0].name}</Text>
-          </View>
-          <View>
-            <Text style={styles.priceText}>${products[0].price}</Text>
-          </View>
-          <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: 100,
-          }}>
-            {/* up down icons to update number of products tp order  */}
-            <View style={styles.iconContainer}>
-              <Octicons name="triangle-down" size={24} color={colors.grey3} />
+      {/* product cart card */}
+      {
+        cart.map((product, index) => {
+          return (
+            <View key={product.id} style={styles.cardContainer}>
+              <Image
+                source={{ uri: product?.image_url ? product.image_url : 'https://picsum.photos/200/300' }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  margin: 10,
+                  borderRadius: 10,
+                }}
+              />
+              <View style={{
+                flexDirection: 'column',
+                justifyContent: 'space-evenly',
+                margin: 10,
+              }}>
+                <View>
+                  <Text style={styles.productText}>{product.type}</Text>
+                  <Text style={styles.productText}>{product.name}</Text>
+                </View>
+                <View>
+                  <Text style={styles.priceText}>${product.price}</Text>
+                </View>
+                <View style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: 100,
+                }}>
+                  <View style={styles.iconContainer}>
+                    <Octicons name="chevron-down" size={15} color={colors.grey3} />
+                  </View>
+                  <Text>1</Text>
+                  <View style={styles.iconContainer}>
+                    <Octicons name="chevron-up" size={15} color={colors.grey3} />
+                  </View>
+                </View>
+              </View>
+              <View style={{
+                justifyContent: 'flex-end',
+                marginRight: 10,
+                marginBottom: 10,
+                marginLeft: 10,
+              }}>
+                <TouchableOpacity onPress={() => removeProductFromCart(product)}>
+                  <View style={styles.iconContainer}>
+                    <Octicons name="trash" size={16} color={colors.grey3} />
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text>1</Text>
-            <View style={styles.iconContainer}>
-              <Octicons name="triangle-up" size={24} color={colors.grey3} />
-            </View>
-          </View>
-        </View>
-        <View style={{
-          justifyContent: 'flex-end',
-          marginRight: 10,
-          marginBottom: 10,
-          marginLeft: 10,
-        }}>
-          <View style={styles.iconContainer}>
-            <Octicons name="trash" size={16} color={colors.grey3} />
-          </View>
-        </View>
-      </View>
+          )
+
+        })
+      }
+
       {/* Address */}
-      <View>
-        <View style={styles.addressHeader}>
-          <Text style={styles.addressHeaderText}>Delivery Address</Text>
-          <Octicons name="arrow-right" size={24} color={colors.black} />
-        </View>
+      <View style={styles.deliveryContainer}>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/cart/addressList')}>
+          <View style={styles.addressHeader}>
+            <Text style={styles.addressHeaderText}>Delivery Address</Text>
+            <Octicons name="chevron-right" size={24} color={colors.black} />
+          </View>
+        </TouchableOpacity>
         <View style={styles.address}>
           <Image
             source={{ uri: 'https://picsum.photos/200/300' }}
@@ -93,6 +118,30 @@ export default function Cart() {
           </View>
         </View>
       </View>
+      <View>
+        <View style={styles.addressHeader}>
+          <Text style={styles.addressHeaderText}>Payment Method</Text>
+          <Octicons name="chevron-right" size={24} color={colors.black} />
+        </View>
+        <View style={styles.address}>
+          <Image
+            source={{ uri: 'https://picsum.photos/200/300' }}
+            style={{
+              width: 50,
+              height: 50,
+              margin: 10,
+              borderRadius: 10,
+            }}
+          />
+          <View style={styles.addressContainer}>
+            <Text style={styles.addressText}>Visa Classic</Text>
+            <Text style={styles.cityText}>**** 7690</Text>
+          </View>
+          <View style={styles.checkmark}>
+            <Octicons name="check-circle-fill" size={24} color={colors.facebook} />
+          </View>
+        </View>
+      </View>
       <View style={styles.totalContainer}>
         <Text style={styles.oderInfo}>Order Info</Text>
         <View style={styles.orderRow}>
@@ -101,11 +150,11 @@ export default function Cart() {
         </View>
         {/* shipping cost row */}
         <View style={styles.orderRow}>
-          <Text style={styles.orderLeftText}>Shipping</Text>
+          <Text style={styles.orderLeftText}>Shipping cost  </Text>
           <Text style={styles.orderRightText}>$ 10</Text>
         </View>
         <View style={styles.orderRow}>
-          <Text style={styles.orderLeftText}>Subtotal</Text>
+          <Text style={styles.orderLeftText}>Total</Text>
           <Text style={styles.orderRightText}>$ 100</Text>
         </View>
       </View>
@@ -170,6 +219,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     backgroundColor: colors.grey6,
     borderRadius: 10,
+    marginTop: 20,
+  },
+  deliveryContainer: {
     marginTop: 20,
   },
   addressHeader: {
