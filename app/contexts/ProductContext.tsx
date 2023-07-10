@@ -78,19 +78,23 @@ export const ProductProvider: React.FC = ({ children }: any) => {
           data: { session }, error
         } = await supabaseClient.auth.getSession();
         const token = `Bearer ${session?.access_token}`;
-        const response = await api.get('/products?select=*', {
-          headers: {
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
-            'Authorization': token,
-          }
-        });
-        const brands = await api.get('/brands?select=*', {
-          headers: {
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
-            'Authorization': token,
-          }
-        });
+        const [response, brands] = await axios.all([
+          api.get('/products?select=*', {
+            headers: {
+              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
+              'Authorization': token,
+            }
+          }),
+          api.get('/brands?select=*', {
+            headers: {
+              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
+              'Authorization': token,
+            }
+          }),
+        ])
         if (error) throw error;
+        // console.log('Brands--->', brands.data)
+        // console.log('Products--->', response.data)
         setBrands(brands.data);
         setProducts(response.data);
       } catch (error) {
@@ -98,7 +102,7 @@ export const ProductProvider: React.FC = ({ children }: any) => {
       }
     };
 
-    fetchProducts();
+    if (session?.user) fetchProducts();
   }, [session]);
 
   useEffect(() => {
