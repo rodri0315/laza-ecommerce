@@ -20,10 +20,7 @@ export default function AddReview() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-        }}
-      >
+      <View style={{}}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Add Review</Text>
         </View>
@@ -82,7 +79,7 @@ export default function AddReview() {
                     inputStyle={{ height: 180 }}
                   />
                   <View>
-                    <Text>Star</Text>
+                    <Text>Star {value}</Text>
                     <View style={styles.sliderContainer}>
                       <Text>1.0</Text>
                       <Slider
