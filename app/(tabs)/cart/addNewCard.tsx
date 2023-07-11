@@ -18,7 +18,6 @@ export default function Address() {
   const [selected, setSelected] = useState<'card' | 'paypal' | 'applepay'>('card');
   const { user, session, signOut } = useAuth();
   const { submitCard } = useCart();
-  const toggleSwitch = () => setIsPrimary(previousState => !previousState);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -100,7 +99,6 @@ export default function Address() {
           card_number: '5254 5454 5454 5454',
           exp: '12/22',
           cvv: '7763',
-          save_card: isPrimary,
           user_id: user?.id!,
         }}
         onSubmit={async (values) => {
@@ -108,7 +106,7 @@ export default function Address() {
           try {
             // if (error) throw error
             console.log('values submitting CARD', values)
-            submitCard({ ...values }, router);
+            submitCard({ ...values }, router, true);
           } catch (err) {
             console.log('Error', err)
             throw err;
@@ -228,7 +226,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   formContainer: {
-    marginTop: 20,
+    marginTop: 30,
     flexGrow: 1,
   },
   input: {
