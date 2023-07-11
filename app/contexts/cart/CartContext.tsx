@@ -4,9 +4,11 @@ import { Product } from '../ProductContext'
 import { api } from '../../services/api'
 import { supabaseClient } from '../../config/supabase-client'
 import structuredClone from '@ungap/structured-clone'
-import { Router } from '../../types/global'
+import { Card, Router } from '../../types/global'
 import { useAddressCache } from '../../hooks/useAddressCache'
 import axios from 'axios'
+import { useCardCache } from '../../hooks/useCardCache'
+import { Alert } from 'react-native'
 
 
 interface CartContextProps {
@@ -21,6 +23,8 @@ interface CartContextProps {
   setAddresses: React.Dispatch<React.SetStateAction<Address[]>>
   addresses: Address[]
   getAddresses: () => void
+  submitCard: (card: Card, router: any) => void
+  cards: Card[]
 }
 
 export type Address = {
@@ -45,7 +49,9 @@ export const CartContext = createContext<CartContextProps>({
   submitAddress: () => { },
   setAddresses: () => { },
   addresses: [],
-  getAddresses: () => { }
+  getAddresses: () => { },
+  submitCard: () => { },
+  cards: []
 })
 
 export const useCart = () => {
@@ -60,8 +66,10 @@ export const useCart = () => {
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const { cartInCache, setCartInCache } = useCartCache()
-  const { addressInCache, setAddressInCache } = useAddressCache()
   const [cart, setCart] = useState<Product[]>([])
+  const { cardsInCache, setCardsInCache } = useCardCache()
+  const [cards, setCard] = useState<Card[]>([])
+  const { addressInCache, setAddressInCache } = useAddressCache()
   const [address, setAddress] = useState<Address | null>(null)
   const [addresses, setAddresses] = useState<Address[]>([])
   const [router, setRouter] = useState<Router | null>(null)
@@ -252,6 +260,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // Add Card to state
+  const submitCard = (card: Card, router: Router): Card => {
+    const cardInCardsIndex = cardsInCache.findIndex((item: Card) => item.card_number === card.card_number)
+    if (cardInCardsIndex !== 0) {
+      const newCard = [
+        ...cardsInCache,
+        {
+          ...card,
+        }
+      ]
+      setCardsInCache(newCard)
+      setCard(newCard)
+      router.back()
+      return card
+    }
+    router.back()
+    Alert.alert('Card already exists')
+    return card
+
+  }
+
+  // Add card to api
+  const submitCardCopy = async (newCard: Card) => {
+    // Sripe API to save card
+
+  }
+
   const clearCart = () => {
     setCartInCache([])
     setCart([])
@@ -270,6 +305,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       addresses,
       setAddresses,
       getAddresses,
+      submitCard,
+      cards: cardsInCache,
     }}>
       {children}
     </CartContext.Provider>
