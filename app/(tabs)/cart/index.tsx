@@ -119,10 +119,12 @@ export default function Cart() {
         </View>
       </View>
       <View>
-        <View style={styles.addressHeader}>
-          <Text style={styles.addressHeaderText}>Payment Method</Text>
-          <Octicons name="chevron-right" size={24} color={colors.black} />
-        </View>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/cart/payment')}>
+          <View style={styles.addressHeader}>
+            <Text style={styles.addressHeaderText}>Payment Method</Text>
+            <Octicons name="chevron-right" size={24} color={colors.black} />
+          </View>
+        </TouchableOpacity>
         <View style={styles.address}>
           <Image
             source={{ uri: 'https://picsum.photos/200/300' }}
