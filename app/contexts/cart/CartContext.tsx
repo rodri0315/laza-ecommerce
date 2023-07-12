@@ -197,18 +197,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         });
       console.log('Address-> POST parsed', JSON.parse(res.request.response)[0])
       const newAddressRes = JSON.parse(res.request.response)[0]
-
       if (isFirstAddress) {
         setAddress(newAddressRes)
         setAddresses([newAddressRes])
         router.back()
       } else {
+        const newAddresses: Address[] = [...addresses, newAddressRes]
         // Update all addresses to is_primary = false
-        const moreThanOnePrimary = addresses.filter((address: Address) => address.is_primary)
+        const moreThanOnePrimary = newAddresses.filter((address: Address) => address.is_primary)
         const hasManyAddresses = moreThanOnePrimary.length > 1
-        let updatedAddresses: Address[] = []
+        let addressesToUpdate: Address[] = []
+        console.log('hasManyAddresses', hasManyAddresses)
+        console.log('newAddressRes?.is_primary', newAddressRes?.is_primary)
         if (hasManyAddresses && newAddressRes?.is_primary) {
-          const newAddresses = moreThanOnePrimary.map((addressToCheck: Address) => {
+          const updatedAddresses = moreThanOnePrimary.map((addressToCheck: Address & { id?: string }) => {
             console.log('mapping addresses', addressToCheck)
             if (addressToCheck.id !== newAddressRes.id) {
               console.log('address.id !== res.data.id')
@@ -217,7 +219,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             }
             return addressToCheck
           })
-          updatedAddresses = newAddresses
+          addressesToUpdate = updatedAddresses
         } else {
           console.log('ROUTING-BACK')
           router?.back()
@@ -228,8 +230,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const {
             data: { session }, error
           } = await supabaseClient.auth.getSession();
-          console.log('updatedAddresses', updatedAddresses, updatedAddresses.length)
-          const apiCalls = updatedAddresses.map(async (address: Address, index) => {
+          console.log('updatedAddresses', addressesToUpdate, addressesToUpdate.length)
+          const apiCalls = addressesToUpdate.map(async (address: Address, index) => {
             // Revisit RLS in Supabase
             return api.post(`/addresses`, { ...address },
               {
@@ -241,8 +243,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 }
               })
           })
-          const res = await axios.all(apiCalls)
-          getAddresses()
+
+          {
+            await axios.all(apiCalls)
+            await getAddresses()
+            router.replace('/(tabs)/cart')
+          }
         } catch (error) {
           console.log('Error updating error', error)
           console.log('Error updating addresses', error.response)
