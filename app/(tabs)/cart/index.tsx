@@ -10,18 +10,46 @@ import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import colors from '../../config/colors';
 import { useCart } from '../../contexts/cart/CartContext';
+import { getLastFourDigits } from '../../helpers/helpers';
+import { Card } from '../../types/global';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Cart() {
 
   const { products } = useProducts();
 
   const { user, session, signOut } = useAuth();
-  const { cart, removeProductFromCart, getAddresses, address } = useCart();
+  const { cart, removeProductFromCart, getAddresses, address, selectedCard,
+    subtractProductFromCart, addProductToCart, createOrder
+  } = useCart();
   const router = useRouter();
 
   useEffect(() => {
     getAddresses();
   }, []);
+
+  const CardNumberInfo = () => {
+    if (!selectedCard) {
+      return (
+        <>
+          <Text style={styles.addressText}>Select a Card</Text>
+        </>
+      );
+    }
+    return (
+      <>
+        <Text style={styles.addressText}>Visa Classic</Text>
+        <Text style={styles.cityText}>{` **** ${selectedCard.card_number.slice(-4)}`}
+        </Text>
+      </>
+    )
+  }
+
+  const cartTotal = () => {
+    return cart.reduce((total, currentVal) => {
+      return total + (currentVal.price * currentVal.quantity);
+    }, 0)
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -172,20 +200,28 @@ export default function Cart() {
         <Text style={styles.oderInfo}>Order Info</Text>
         <View style={styles.orderRow}>
           <Text style={styles.orderLeftText}>Subtotal</Text>
-          <Text style={styles.orderRightText}>$ 100</Text>
+          <Text style={styles.orderRightText}>
+            ${cartTotal()}
+          </Text>
         </View>
         {/* shipping cost row */}
         <View style={styles.orderRow}>
           <Text style={styles.orderLeftText}>Shipping cost  </Text>
           <Text style={styles.orderRightText}>$ 10</Text>
         </View>
-        <View style={styles.orderRow}>
+        <View style={[styles.orderRow, { marginVertical: 10 }]}>
           <Text style={styles.orderLeftText}>Total</Text>
-          <Text style={styles.orderRightText}>$ 100</Text>
+          {/* loop cart and get total from price */}
+          <Text style={styles.orderRightText}>$ {cartTotal() + 10}</Text>
         </View>
       </View>
-      <Button title="Checkout"
-        onPress={() => router.push({ pathname: '/(tabs)/cart/address' })} />
+      <TouchableOpacity
+        onPress={() => createOrder(cart, address, cartTotal(), router)}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Checkout</Text>
+      </TouchableOpacity>
+
     </SafeAreaView >
   );
 }
@@ -195,6 +231,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
+    backgroundColor: colors.white,
   },
   topHeader: {
     height: '20%',
@@ -225,6 +262,8 @@ const styles = StyleSheet.create({
   productText: {
     fontSize: 13,
     fontWeight: '500',
+    flexWrap: 'wrap',
+    width: 170,
   },
   iconContainer: {
     borderRadius: 50,
@@ -300,7 +339,6 @@ const styles = StyleSheet.create({
   },
   totalContainer: {
     marginHorizontal: 20,
-    marginTop: 20,
   },
   oderInfo: {
     fontSize: 17,
@@ -310,7 +348,7 @@ const styles = StyleSheet.create({
   orderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    paddingTop: 5,
   },
   orderLeftText: {
     fontSize: 15,
@@ -321,5 +359,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: colors.black,
   },
+  scrollView: {
+    flex: 1,
+    maxHeight: 310,
+  },
+  button: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: colors.primary,
+    paddingVertical: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 17,
+    fontWeight: '500',
+  },
+
 });
 
