@@ -8,11 +8,12 @@ import { Slot } from 'expo-router';
 import { ProductProvider } from './contexts/ProductContext';
 import ReviewState from './contexts/review/ReviewContext';
 import { CartProvider } from './contexts/cart/CartContext';
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 
 export default function App() {
 
-  const isLoadingComplete = useCachedResources();
+  const { isLoadingComplete, publishableKey } = useCachedResources();
 
   if (!isLoadingComplete) {
     return null;
@@ -21,14 +22,18 @@ export default function App() {
       <SafeAreaProvider>
         <AuthProvider>
           <ThemeProvider theme={theme}>
-            <ProductProvider>
-              <CartProvider>
-                <ReviewState>
-                  <StatusBar />
-                  <Slot />
-                </ReviewState>
-              </CartProvider>
-            </ProductProvider>
+            <StripeProvider
+              publishableKey={publishableKey}
+            >
+              <ProductProvider>
+                <CartProvider>
+                  <ReviewState>
+                    <StatusBar />
+                    <Slot />
+                  </ReviewState>
+                </CartProvider>
+              </ProductProvider>
+            </StripeProvider>
           </ThemeProvider>
         </AuthProvider>
       </SafeAreaProvider>
