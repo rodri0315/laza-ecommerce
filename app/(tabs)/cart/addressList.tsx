@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import colors from '../../config/colors';
 import BackButton from '../../components/BackButton';
 import { useRouter } from 'expo-router';
@@ -7,7 +7,7 @@ import { useCart } from '../../contexts/cart/CartContext';
 
 export default function AddressList() {
   const router = useRouter();
-  const { addresses } = useCart()
+  const { addresses, setAddress } = useCart()
   return (
     <SafeAreaView style={styles.container}>
       <View style={{}}>
@@ -18,22 +18,28 @@ export default function AddressList() {
           <BackButton />
         </View>
       </View>
-      <View style={{ flexGrow: 1 }}>
-        <View style={styles.address}>
-          <View style={styles.addressContainer}>
-            <Text style={styles.addressText}>Jorge Rod</Text>
-            <Text style={styles.addressText}>123 main st, Durham, NC, 27771</Text>
-            <Text style={styles.cityText}>**** 7690</Text>
-          </View>
-        </View>
-        <View style={styles.address}>
-          <View style={styles.addressContainer}>
-            <Text style={styles.addressText}>Jorge Rod</Text>
-            <Text style={styles.addressText}>123 main st, Durham, NC, 27771</Text>
-            <Text style={styles.cityText}>**** 7690</Text>
-          </View>
-        </View>
-      </View>
+      <ScrollView style={{ flexGrow: 1 }}>
+        {
+          addresses.map((address, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setAddress(address)
+                  router.back()
+                }}
+                style={styles.address}
+              >
+                <View style={styles.addressContainer}>
+                  <Text style={styles.addressText}>{address.full_name}</Text>
+                  <Text style={styles.addressText}>{address.address}</Text>
+                  <Text style={styles.cityText}>{address.city}, {address.country}</Text>
+                </View>
+              </TouchableOpacity>
+            )
+          })
+        }
+      </ScrollView>
       <TouchableOpacity
         onPress={() => router.push('/cart/address')}
         style={styles.button}
