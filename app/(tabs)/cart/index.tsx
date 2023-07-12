@@ -10,7 +10,6 @@ import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import colors from '../../config/colors';
 import { useCart } from '../../contexts/cart/CartContext';
-import { getLastFourDigits } from '../../helpers/helpers';
 import { Card } from '../../types/global';
 import { ScrollView } from 'react-native-gesture-handler';
 
