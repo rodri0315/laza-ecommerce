@@ -4,14 +4,15 @@ import { Product } from '../ProductContext'
 import { api } from '../../services/api'
 import { supabaseClient } from '../../config/supabase-client'
 import structuredClone from '@ungap/structured-clone'
-import { Card, Router } from '../../types/global'
+import { Card, Router } from '../../types/global';
 import { useAddressCache } from '../../hooks/useAddressCache'
 import axios from 'axios'
 import { useCardCache } from '../../hooks/useCardCache'
 import { Alert } from 'react-native'
+import { Json, Order, OrderInsert } from '../../types/supabase';
 
 
-interface CartContextProps {
+export interface CartContextProps {
   cart: Product[]
   addProductToCart: (product: Product) => void
   setCart: React.Dispatch<React.SetStateAction<Product[]>>
@@ -23,12 +24,21 @@ interface CartContextProps {
   setAddresses: React.Dispatch<React.SetStateAction<Address[]>>
   addresses: Address[]
   getAddresses: () => void
-  submitCard: (card: Card, router: any) => void
+  submitCard: (card: Card, router: Router, saveCard?: boolean) => void
   cards: Card[]
+  selectedCard: Card | null
+  subtractProductFromCart: (product: Product) => void
+  setAddress: React.Dispatch<React.SetStateAction<Address | null>>
+  createOrder: (
+    cart: Json[],
+    deliveryAddress: Address,
+    totalAmount: number,
+    router: Router,
+  ) => void
 }
 
 export type Address = {
-  id: number
+  // id: number
   address: string
   city: string
   country: string
@@ -51,7 +61,11 @@ export const CartContext = createContext<CartContextProps>({
   addresses: [],
   getAddresses: () => { },
   submitCard: () => { },
-  cards: []
+  cards: [],
+  selectedCard: null,
+  subtractProductFromCart: () => { },
+  setAddress: () => { },
+  createOrder: () => { },
 })
 
 export const useCart = () => {
@@ -69,6 +83,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<Product[]>([])
   const { cardsInCache, setCardsInCache } = useCardCache()
   const [cards, setCard] = useState<Card[]>([])
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null)
   const { addressInCache, setAddressInCache } = useAddressCache()
   const [address, setAddress] = useState<Address | null>(null)
   const [addresses, setAddresses] = useState<Address[]>([])
@@ -158,7 +173,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           'Authorization': token,
         }
       });
-      console.log('Addresses-> GET', addresses.data)
+      // console.log('Addresses-> GET', addresses.data)
       const primaryAddress = addresses.data.find((address: Address) => address.is_primary)
       setAddress(primaryAddress ? primaryAddress : null)
       setAddresses(addresses.data)
@@ -280,7 +295,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Add Card to state
-  const submitCard = (card: Card, router: Router): Card => {
+  const submitCard = (card: Card, router: Router, saveCard: boolean = false): Card => {
+    debugger
+    if (!saveCard) {
+
+      setSelectedCard(card)
+      router.back()
+      return card
+    }
     const cardInCardsIndex = cardsInCache.findIndex((item: Card) => item.card_number === card.card_number)
     if (cardInCardsIndex !== 0) {
       const newCard = [
@@ -300,10 +322,48 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   }
 
-  // Add card to api
-  const submitCardCopy = async (newCard: Card) => {
-    // Sripe API to save card
+  // Add order to api
+  const createOrder = async (
+    cart: Product[],
+    deliveryAddress: Address,
+    totalAmount: number,
+    router: Router,
+  ) => {
+    try {
+      const {
+        data: { session }, error
+      } = await supabaseClient.auth.getSession();
+      const token = `Bearer ${session?.access_token}`;
+      const orderItems = cart.map((product: Product) => {
+        return {
+          product_id: product.id,
+          quantity: product.quantity,
+          price: product.price,
+        }
+      })
+      const order: OrderInsert = {
+        shipping_address: `${deliveryAddress.address}, ${deliveryAddress.city}, ${deliveryAddress.country}`,
+        total_amount: totalAmount,
+        user_id: session?.user.id || null,
+        orderItems: orderItems,
+      }
+      console.log('Submit Cart')
+      const res = await api.post('/orders', { ...order },
+        {
+          headers: {
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          }
+        }
+      );
+      console.log('Order', res)
 
+    }
+    catch (err) {
+      console.log(err.response)
+    }
   }
 
   const clearCart = () => {
@@ -314,6 +374,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   return (
     <CartContext.Provider value={{
       cart: cartInCache,
+      cards: cardsInCache,
       setCart,
       addProductToCart,
       removeProductFromCart,
@@ -325,7 +386,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setAddresses,
       getAddresses,
       submitCard,
-      cards: cardsInCache,
+      selectedCard,
+      subtractProductFromCart,
+      setAddress,
+      createOrder,
     }}>
       {children}
     </CartContext.Provider>
