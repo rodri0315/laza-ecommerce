@@ -130,10 +130,15 @@ export default function Cart() {
             <Text style={styles.cityText}>{address?.city}, {address?.country}</Text>
           </View>
           <View style={styles.checkmark}>
-            <Octicons name="check-circle-fill" size={24} color={colors.facebook} />
+            {
+              address && (
+                <Octicons name="check-circle-fill" size={24} color={colors.secondary} />
+              )
+            }
           </View>
         </View>
       </View>
+      {/* Card Info*/}
       <View>
         <TouchableOpacity onPress={() => router.push('/(tabs)/cart/payment')}>
           <View style={styles.addressHeader}>
@@ -152,11 +157,14 @@ export default function Cart() {
             }}
           />
           <View style={styles.addressContainer}>
-            <Text style={styles.addressText}>Visa Classic</Text>
-            <Text style={styles.cityText}>**** 7690</Text>
+            {CardNumberInfo()}
           </View>
           <View style={styles.checkmark}>
-            <Octicons name="check-circle-fill" size={24} color={colors.facebook} />
+            {
+              selectedCard && (
+                <Octicons name="check-circle-fill" size={24} color={colors.secondary} />
+              )
+            }
           </View>
         </View>
       </View>
