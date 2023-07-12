@@ -10,3 +10,13 @@ export type Router = {
   /** Update the current route query params. */
   setParams: (params?: Record<string, string>) => void;
 };
+
+export type Card = {
+  id: string;
+  card_owner: string;
+  card_number: string;
+  exp: string;
+  cvv: string;
+  user_id: string;
+  already_exists?: boolean;
+}

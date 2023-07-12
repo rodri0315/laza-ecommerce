@@ -9,6 +9,49 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          address: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          full_name: string | null
+          id: number
+          is_primary: boolean | null
+          phone: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: number
+          is_primary?: boolean | null
+          phone?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: number
+          is_primary?: boolean | null
+          phone?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "addresses_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       brands: {
         Row: {
           created_at: string | null
@@ -68,6 +111,7 @@ export interface Database {
         Row: {
           created_at: string | null
           id: number
+          orderItems: Json[] | null
           shipping_address: string | null
           total_amount: number | null
           user_id: string | null
@@ -75,6 +119,7 @@ export interface Database {
         Insert: {
           created_at?: string | null
           id?: number
+          orderItems?: Json[] | null
           shipping_address?: string | null
           total_amount?: number | null
           user_id?: string | null
@@ -82,6 +127,7 @@ export interface Database {
         Update: {
           created_at?: string | null
           id?: number
+          orderItems?: Json[] | null
           shipping_address?: string | null
           total_amount?: number | null
           user_id?: string | null
@@ -102,6 +148,7 @@ export interface Database {
           description: string | null
           id: number
           image_url: string | null
+          image_urls: string[] | null
           is_sold_out: boolean | null
           name: string | null
           price: number | null
@@ -113,6 +160,7 @@ export interface Database {
           description?: string | null
           id?: number
           image_url?: string | null
+          image_urls?: string[] | null
           is_sold_out?: boolean | null
           name?: string | null
           price?: number | null
@@ -124,6 +172,7 @@ export interface Database {
           description?: string | null
           id?: number
           image_url?: string | null
+          image_urls?: string[] | null
           is_sold_out?: boolean | null
           name?: string | null
           price?: number | null
@@ -153,16 +202,18 @@ export interface Database {
           created_at?: string | null
           id?: number
           product_id?: number | null
-          rating?: number | null
+          rating?: number
           user_id?: string | null
+          user_name?: string | null
         }
         Update: {
           comment?: string | null
           created_at?: string | null
           id?: number
           product_id?: number | null
-          rating?: number | null
+          rating?: number
           user_id?: string | null
+          user_name?: string | null
         }
         Relationships: [
           {
@@ -208,5 +259,25 @@ export interface Database {
         ]
       }
     }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }
+
+export type Row<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+export type InsertDto<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Insert'];
+export type UpdateDto<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Update'];
+
+export type Order = Row<'orders'>;
+export type OrderInsert = InsertDto<'orders'>;
+export type OrderUpdate = UpdateDto<'orders'>;
