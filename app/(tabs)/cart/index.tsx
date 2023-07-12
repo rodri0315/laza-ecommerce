@@ -34,62 +34,78 @@ export default function Cart() {
         </View>
       </View>
       {/* product cart card */}
-      {
-        cart.map((product, index) => {
-          return (
-            <View key={product.id} style={styles.cardContainer}>
-              <Image
-                source={{ uri: product?.image_url ? product.image_url : 'https://picsum.photos/200/300' }}
-                style={{
-                  width: 100,
-                  height: 100,
+      <ScrollView
+        style={styles.scrollView}
+      >
+        {
+          cart.map((product, index) => {
+            const isOdd = index % 2 === 0;
+            return (
+              <View
+                key={product.id}
+                style={isOdd ? styles.cardContainerWhite : styles.cardContainer}
+              >
+                <Image
+                  source={{ uri: product?.image_url ? product.image_url : 'https://picsum.photos/200/300' }}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    margin: 10,
+                    borderRadius: 10,
+                  }}
+                />
+                <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'space-evenly',
                   margin: 10,
-                  borderRadius: 10,
-                }}
-              />
-              <View style={{
-                flexDirection: 'column',
-                justifyContent: 'space-evenly',
-                margin: 10,
-              }}>
-                <View>
-                  <Text style={styles.productText}>{product.type}</Text>
-                  <Text style={styles.productText}>{product.name}</Text>
-                </View>
-                <View>
-                  <Text style={styles.priceText}>${product.price}</Text>
+                }}>
+                  <View>
+                    <Text style={styles.productText}>{product.type}</Text>
+                    <Text style={styles.productText}>{product.name}</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.priceText}>${product.price}</Text>
+                  </View>
+                  <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: 100,
+                  }}>
+                    <TouchableOpacity
+                      onPress={() => subtractProductFromCart(product)}
+                    >
+                      <View style={styles.iconContainer}>
+                        <Octicons name="chevron-down" size={15} color={colors.grey3} />
+                      </View>
+                    </TouchableOpacity>
+                    <Text>{product.quantity}</Text>
+                    <TouchableOpacity
+                      onPress={() => addProductToCart(product)}
+                    >
+                      <View style={styles.iconContainer}>
+                        <Octicons name="chevron-up" size={15} color={colors.grey3} />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <View style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  width: 100,
+                  justifyContent: 'flex-end',
+                  marginRight: 10,
+                  marginBottom: 10,
+                  marginLeft: 10,
                 }}>
-                  <View style={styles.iconContainer}>
-                    <Octicons name="chevron-down" size={15} color={colors.grey3} />
-                  </View>
-                  <Text>1</Text>
-                  <View style={styles.iconContainer}>
-                    <Octicons name="chevron-up" size={15} color={colors.grey3} />
-                  </View>
+                  <TouchableOpacity onPress={() => removeProductFromCart(product)}>
+                    <View style={styles.iconContainer}>
+                      <Octicons name="trash" size={16} color={colors.grey3} />
+                    </View>
+                  </TouchableOpacity>
                 </View>
               </View>
-              <View style={{
-                justifyContent: 'flex-end',
-                marginRight: 10,
-                marginBottom: 10,
-                marginLeft: 10,
-              }}>
-                <TouchableOpacity onPress={() => removeProductFromCart(product)}>
-                  <View style={styles.iconContainer}>
-                    <Octicons name="trash" size={16} color={colors.grey3} />
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )
+            )
 
-        })
-      }
+          })
+        }
+      </ScrollView>
 
       {/* Address */}
       <View style={styles.deliveryContainer}>
@@ -223,8 +239,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
   },
-  deliveryContainer: {
+  cardContainerWhite: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginHorizontal: 20,
+    borderRadius: 10,
     marginTop: 20,
+    backgroundColor: colors.white,
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 15,
+  },
+  deliveryContainer: {
+    marginTop: 10,
   },
   addressHeader: {
     flexDirection: 'row',
