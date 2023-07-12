@@ -2,16 +2,20 @@ import { FontAwesome } from "@expo/vector-icons";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from 'react';
+import { STRIPE_TEST_PUBLISHABLE_KEY } from "@env";
 
 export default function useCachedResources() {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
+
+  const [publishableKey, setPublishableKey] = useState('');
 
   // Load any resources or data that we need prior to rendering the app
   useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHideAsync();
-
+        // get Stripe key
+        setPublishableKey(STRIPE_TEST_PUBLISHABLE_KEY);
         // Load fonts
         await Font.loadAsync({
           ...FontAwesome.font,
@@ -29,5 +33,5 @@ export default function useCachedResources() {
     loadResourcesAndDataAsync();
   }, []);
 
-  return isLoadingComplete;
+  return {isLoadingComplete, publishableKey};
 }

@@ -5,4 +5,5 @@ export const displayValidationIcon = (
     // if (!error && !touched) return 'none';
     if (error && !touched) return 'none';
     return (error && touched) || value === '' ? 'none' : 'flex';
-  }
+}
+

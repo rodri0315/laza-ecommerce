@@ -13,17 +13,14 @@ import { useRouter } from 'expo-router';
 export default function AddReview() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
   const { currentProduct } = useCurrentProduct();
   const { user } = useAuth();
   const [, reviewDispatch] = useReviews();
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-        }}
-      >
+      <View style={{}}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Add Review</Text>
         </View>
@@ -82,14 +79,14 @@ export default function AddReview() {
                     inputStyle={{ height: 180 }}
                   />
                   <View>
-                    <Text>Star</Text>
+                    <Text>Star {value}</Text>
                     <View style={styles.sliderContainer}>
-                      <Text>0.0</Text>
+                      <Text>1.0</Text>
                       <Slider
                         value={value}
                         onValueChange={setValue}
                         maximumValue={5}
-                        minimumValue={0}
+                        minimumValue={1}
                         step={.5}
                         allowTouchTrack
                         trackStyle={{
