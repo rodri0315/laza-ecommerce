@@ -101,6 +101,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return cart
   }
 
+  // subtract one from the quantity of the product in the cart
+  const subtractProductFromCart = (product: Product) => {
+    const productInCartIndex = cartInCache.findIndex((item: Product) => item.id === product.id)
+    if (productInCartIndex >= 0) {
+      const newCart = structuredClone(cartInCache)
+      newCart[productInCartIndex].quantity--
+      setCartInCache(newCart)
+      setCart(newCart)
+      console.log('Product already in cart', newCart, newCart[productInCartIndex].quantity)
+      return newCart
+    }
+  }
+
   const removeProductFromCart = (product: Product) => {
     const newCart = cartInCache.filter(item => item.id !== product.id)
     setCartInCache(newCart)
