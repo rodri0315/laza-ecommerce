@@ -8,7 +8,7 @@ import colors from '../config/colors';
 import { Fontisto, Octicons } from '@expo/vector-icons';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import Menu from '../../assets/menu.svg';
+import MenuOpen from '../../assets/MenuOpen.svg';
 
 
 export default function MainLayout() {
@@ -28,7 +28,7 @@ export default function MainLayout() {
               <TouchableOpacity
                 onPress={() => props.navigation.toggleDrawer()}
                 style={styles.menuIcon}>
-                <Menu />
+                <MenuOpen />
               </TouchableOpacity>
               <View style={styles.header}>
                 {/* image, name, order count button gray */}
