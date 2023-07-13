@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useAuth } from '../../../contexts/AuthContext';
 import { Button, Card, Image, Input, SearchBar } from '@rneui/themed';
@@ -7,9 +7,8 @@ import MenuButton from '../../../components/MenuButton';
 import CartButton from '../../../components/CartButton';
 import colors from '../../../config/colors';
 import ProductCard from '../../../components/ProductCard';
-import { useNavigation, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-// import { DrawerActions } from '@react-navigation/native';
 import { useDrawerStatus } from '@react-navigation/drawer'
 
 
@@ -18,29 +17,25 @@ export default function Home() {
   const { products, brands, setSelectedBrand } = useProducts();
   const { user } = useAuth();
   const router = useRouter();
-  const navigation = useNavigation();
   const drawerStatus = useDrawerStatus();
-  // const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
-  // const openDrawer = () => {
-  //   navigation.dispatch(DrawerActions.openDrawer());
-  // }
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const searchProducts = () => {
+    if (searchTerm.length > 0) {
+      return products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    } else {
+      return products;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
         <View style={styles.topHeader}>
           <View style={styles.headerIcons}>
-            {/* <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-              style={{
-                marginRight: 10,
-
-                borderRadius: 25,
-                backgroundColor: colors.grey5,
-              }}
-            > */}
             {drawerStatus === 'closed' ? <MenuButton /> : <View></View>}
-            {/* <DrawerToggleButton /> */}
-
             <CartButton />
           </View>
         </View>
@@ -57,6 +52,8 @@ export default function Home() {
             leftIcon={{ name: 'search' }}
             containerStyle={styles.searchBarContainer}
             inputContainerStyle={styles.searchBarInputContainer}
+            onChangeText={text => setSearchTerm(text)}
+            value={searchTerm}
           />
           {/* microphone icon button */}
           <TouchableOpacity
@@ -88,7 +85,7 @@ export default function Home() {
                       onPress={() => {
                         setSelectedBrand(brand)
                         router.push({
-                          pathname: '/(tabs)/main/brandProducts',
+                          pathname: '/(tabs)/main/home/brandProducts',
                         })
                       }}
                     >
@@ -129,8 +126,13 @@ export default function Home() {
       </View>
       <ScrollView contentContainerStyle={styles.cardList}>
         {
-          products.map((product, index) => {
-            return <ProductCard key={product.id} product={product} index={index} />
+          searchProducts().map((product, index) => {
+            return <ProductCard
+              key={product.id}
+              product={product}
+              index={index}
+              isFavorite={product.isFavorite}
+            />
           })
         }
       </ScrollView>
