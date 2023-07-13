@@ -3,13 +3,34 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Product, useCurrentProduct, useProducts } from '../contexts/ProductContext';
 import { Image } from '@rneui/themed';
 import { useRouter } from 'expo-router';
+import Heart from '../../assets/Heart.svg';
 
-export default function ProductCard({ product, index }: { product: Product, index: number }) {
+export default function ProductCard(
+  { product, index, isFavorite = false }:
+    { product: Product, index: number, isFavorite?: boolean }
+) {
   const router = useRouter();
   const isEven = index % 2 === 0;
   const { setCurrentProduct } = useCurrentProduct();
+  const { toggleFavorite } = useProducts();
   return (
     <View style={styles.cardContainer} >
+      <TouchableOpacity
+        onPress={() => toggleFavorite(product)}
+        style={{
+          position: 'absolute',
+          zIndex: 1,
+          right: isEven ? 28 : 31,
+          top: 22,
+        }}>
+        <View style={styles.heart}>
+          {
+            isFavorite ?
+              <Heart fill='#9775FA' /> :
+              <Heart />
+          }
+        </View>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
           setCurrentProduct(product);
