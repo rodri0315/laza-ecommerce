@@ -14,7 +14,7 @@ export default function ProductCard({ product, index }: { product: Product, inde
         onPress={() => {
           setCurrentProduct(product);
           router.push({
-            pathname: `/(tabs)/home/[${product.id}]`,
+            pathname: `/(tabs)/main/[${product.id}]`,
           })
         }
         }
