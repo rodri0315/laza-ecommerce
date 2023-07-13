@@ -1,8 +1,8 @@
 import React from 'react';
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { SimpleLineIcons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import colors from '../config/colors';
+import Bag from '../../assets/Bag.svg';
 
 export default function CartButton() {
   const navigation = useRouter();
@@ -17,7 +17,7 @@ export default function CartButton() {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      <SimpleLineIcons name="handbag" size={24} color="black" />
+      <Bag />
     </TouchableOpacity>
   );
 }
