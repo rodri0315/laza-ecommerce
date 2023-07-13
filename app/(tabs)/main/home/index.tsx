@@ -1,33 +1,46 @@
-// react native screen with title 
-
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Button, Card, Image, Input, SearchBar } from '@rneui/themed';
-import { useProducts } from '../../contexts/ProductContext';
-import MenuButton from '../../components/MenuButton';
-import CartButton from '../../components/CartButton';
-import colors from '../../config/colors';
-import ProductCard from '../../components/ProductCard';
-import { useRouter } from 'expo-router';
+import { useProducts } from '../../../contexts/ProductContext';
+import MenuButton from '../../../components/MenuButton';
+import CartButton from '../../../components/CartButton';
+import colors from '../../../config/colors';
+import ProductCard from '../../../components/ProductCard';
+import { useNavigation, useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-// import { ScrollView } from 'react-native-gesture-handler';
+// import { DrawerActions } from '@react-navigation/native';
+import { useDrawerStatus } from '@react-navigation/drawer'
+
 
 export default function Home() {
 
   const { products, brands, setSelectedBrand } = useProducts();
-
   const { user } = useAuth();
-
   const router = useRouter();
-
-
+  const navigation = useNavigation();
+  const drawerStatus = useDrawerStatus();
+  // const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
+  // const openDrawer = () => {
+  //   navigation.dispatch(DrawerActions.openDrawer());
+  // }
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
         <View style={styles.topHeader}>
           <View style={styles.headerIcons}>
-            <MenuButton />
+            {/* <TouchableOpacity
+              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              style={{
+                marginRight: 10,
+
+                borderRadius: 25,
+                backgroundColor: colors.grey5,
+              }}
+            > */}
+            {drawerStatus === 'closed' ? <MenuButton /> : <View></View>}
+            {/* <DrawerToggleButton /> */}
+
             <CartButton />
           </View>
         </View>
@@ -75,7 +88,7 @@ export default function Home() {
                       onPress={() => {
                         setSelectedBrand(brand)
                         router.push({
-                          pathname: '/(tabs)/home/brandProducts',
+                          pathname: '/(tabs)/main/brandProducts',
                         })
                       }}
                     >

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
 import { Formik, useFormik, useFormikContext } from 'formik';
-import BackButton from '../../components/BackButton';
-import colors from '../../config/colors';
-import CartButton from '../../components/CartButton';
+import BackButton from '../../../components/BackButton';
+import colors from '../../../config/colors';
+import CartButton from '../../../components/CartButton';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Image } from '@rneui/themed';
-import ProductCard from '../../components/ProductCard';
-import { useProducts } from '../../contexts/ProductContext';
+import ProductCard from '../../../components/ProductCard';
+import { useProducts } from '../../../contexts/ProductContext';
 
 export default function BrandProducts() {
 

@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '@rneui/themed';
-import { useProducts } from '../contexts/ProductContext';
+import { useProducts } from '../../contexts/ProductContext';
 
 export default function Cards() {
 

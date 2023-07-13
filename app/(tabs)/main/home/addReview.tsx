@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
 import { Formik, useFormik, useFormikContext } from 'formik';
-import BackButton from '../../components/BackButton';
-import colors from '../../config/colors';
+import BackButton from '../../../components/BackButton';
+import colors from '../../../config/colors';
 import { Input } from '@rneui/base';
 import { Slider } from '@rneui/themed';
-import { addReview, useReviews } from '../../contexts/review/ReviewContext';
-import { useCurrentProduct } from '../../contexts/ProductContext';
-import { useAuth } from '../../contexts/AuthContext';
+import { addReview, useReviews } from '../../../contexts/review/ReviewContext';
+import { useCurrentProduct } from '../../../contexts/ProductContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { useRouter } from 'expo-router';
 
 export default function AddReview() {
