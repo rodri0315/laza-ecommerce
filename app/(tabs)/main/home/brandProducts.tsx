@@ -49,7 +49,12 @@ export default function BrandProducts() {
       <ScrollView contentContainerStyle={styles.cardList}>
         {
           products.map((product, index) => {
-            return <ProductCard key={product.id} product={product} index={index} />
+            return <ProductCard
+              key={product.id}
+              product={product}
+              index={index}
+              isFavorite={product.isFavorite}
+            />
           })
         }
       </ScrollView>
