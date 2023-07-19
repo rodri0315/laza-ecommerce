@@ -3,7 +3,7 @@ import axios from 'axios';
 import { api } from '../services/api';
 import { useAuth } from './AuthContext';
 import { supabaseClient } from '../config/supabase-client';
-import { Database } from '../types/supabase';
+import { Database, UserFavorite } from '../types/supabase';
 
 // Create a context for products
 interface ProductContextProps {
@@ -40,7 +40,7 @@ const CurrentProductContext = createContext<CurrentProductContextType>({
 
 // Product interface
 export interface Product {
-  id: string;
+  id: number;
   type: string;
   name: string;
   description: string;
@@ -76,7 +76,7 @@ export const ProductProvider: React.FC = ({ children }: any) => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
   const [brandProducts, setBrandProducts] = useState<Product[]>([]);
-  const [userFavorites, setUserFavoritesProducts] = useState<Product[]>([]);
+  const [userFavorites, setUserFavorites] = useState<Product[]>([]);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
 
   useEffect(() => {
@@ -112,14 +112,20 @@ export const ProductProvider: React.FC = ({ children }: any) => {
         console.log('Products--->', products.data)
         console.log('Favorites--->', favorites.data, favorites.status)
 
-        let updatedProducts: Product[] = [];
         if (favorites.data.length > 0) {
-          const userFavoritesProducts = favorites.data.map((favorite: any) => {
-            return products.data.find((product: Product) => product.id === favorite.product_id)
-          })
-          setUserFavoritesProducts(userFavoritesProducts); if (userFavoritesProducts.length > 0) {
-            updatedProducts = products.data.map((product: Product) => {
-              if (userFavoritesProducts.find((userFavorite: Product) => userFavorite.id === product.id)) {
+          const userFavoritesProducts = favorites.data.map((favorite: UserFavorite) => {
+            return favorite.product_id
+          });
+          try {
+            const { data: favoriteProducts } = await api.get(`/products?id=in.(${userFavoritesProducts.join(',')})&select=*`, {
+              headers: {
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRidWRjaHp6bGtvenhid3BjdGZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODY3NjcxMzksImV4cCI6MjAwMjM0MzEzOX0.OodwJcw12wGRJzJBzZU3ijUb4wALBGuzahwAsgSdT14',
+                'Authorization': token,
+              }
+            });
+            setUserFavorites(favoriteProducts);
+            const updatedProducts = products.data.map((product: Product) => {
+              if (favoriteProducts.find((favoriteProduct: Product) => favoriteProduct.id === product.id)) {
                 return {
                   ...product,
                   isFavorite: true
@@ -127,10 +133,13 @@ export const ProductProvider: React.FC = ({ children }: any) => {
               }
               return product
             });
+            setProducts(updatedProducts);
+          }
+          catch (err) {
+            console.log(err.response)
           }
         }
         setBrands(brands.data);
-        setProducts([...updatedProducts]);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -192,11 +201,11 @@ export const ProductProvider: React.FC = ({ children }: any) => {
             }
           }
         );
-        debugger
+        // debugger
         console.log('Removed Favorite--->', removedFavorite.request.status)
         if (error) throw error;
         setProducts(products.filter((product: Product) => product.id !== removedFavorite.data[0].product_id))
-        return setUserFavoritesProducts(userFavorites.filter((favorite: Product) => favorite.id !== product.id))
+        return setUserFavorites(userFavorites.filter((favorite: Product) => favorite.id !== product.id))
 
       }
       console.log('New Favorite')
@@ -225,7 +234,7 @@ export const ProductProvider: React.FC = ({ children }: any) => {
 
       // debugger
       const updatedUserFavorites = updatedProducts.filter((product) => product && product.isFavorite)
-      setUserFavoritesProducts([...updatedUserFavorites])
+      setUserFavorites([...updatedUserFavorites])
       setProducts(updatedProducts)
     }
     catch (err) {
@@ -241,7 +250,7 @@ export const ProductProvider: React.FC = ({ children }: any) => {
       selectedBrand,
       setSelectedBrand,
       userFavorites,
-      setUserFavoritesProducts,
+      setUserFavoritesProducts: setUserFavorites,
       toggleFavorite
     }}>
       <CurrentProductContext.Provider value={{ currentProduct, setCurrentProduct }} >
