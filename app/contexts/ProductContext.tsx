@@ -164,8 +164,8 @@ export const ProductProvider: React.FC = ({ children }: any) => {
         });
         if (error) throw error;
         console.log('Brand Products--->', response.data[0].brand_id)
-        const updatedBrandProducts = response.data.map((product) => {
-          if (product.id === currentProduct?.id) {
+        const updatedBrandProducts = response.data.map((product: Product) => {
+          if (userFavorites.find((favoriteProduct: Product) => favoriteProduct.id === product.id)) {
             return {
               ...product,
               isFavorite: true
