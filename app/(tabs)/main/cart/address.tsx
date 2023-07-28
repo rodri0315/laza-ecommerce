@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Button, Input, Switch } from '@rneui/themed';
-import { useProducts } from '../../contexts/ProductContext';
-import BackButton from '../../components/BackButton';
+import { useProducts } from '../../../contexts/ProductContext';
+import BackButton from '../../../components/BackButton';
 import { Formik } from 'formik';
-import colors from '../../config/colors';
-import { useCart } from '../../contexts/cart/CartContext';
+import colors from '../../../config/colors';
+import { useCart } from '../../../contexts/cart/CartContext';
 import { useRouter } from 'expo-router';
 
 export default function Address() {

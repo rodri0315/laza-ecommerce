@@ -2,14 +2,14 @@ import { Image } from '@rneui/themed';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
-import { useCurrentProduct } from '../../contexts/ProductContext';
-import BackButton from '../../components/BackButton';
-import CartButton from '../../components/CartButton';
-import colors from '../../config/colors';
-import { sizes } from '../../helpers/constants';
-import Review from '../../components/review';
-import { getReviews, useReviews } from '../../contexts/review/ReviewContext';
-import { useCart } from '../../contexts/cart/CartContext';
+import { useCurrentProduct } from '../../../contexts/ProductContext';
+import BackButton from '../../../components/BackButton';
+import CartButton from '../../../components/CartButton';
+import colors from '../../../config/colors';
+import { sizes } from '../../../helpers/constants';
+import Review from '../../../components/review';
+import { getReviews, useReviews } from '../../../contexts/review/ReviewContext';
+import { useCart } from '../../../contexts/cart/CartContext';
 
 export default function ProductDetail() {
   const router = useRouter();
@@ -119,14 +119,14 @@ export default function ProductDetail() {
           <View style={styles.reviews}>
             <Text style={styles.reviewsTitle}>Reviews</Text>
             <TouchableOpacity
-              onPress={() => router.push('/home/reviews')}
+              onPress={() => router.push('/main/reviews')}
             >
               <Text style={styles.reviewsText}>View All</Text>
             </TouchableOpacity>
 
           </View>
           {/* Review list */}
-          <View style={styles.reviewList}>
+          <View style={{}}>
             <Review review={reviews[reviews.length - 1]} />
           </View>
           {/* Total Price */}

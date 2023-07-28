@@ -9,7 +9,7 @@ import { useAddressCache } from '../../hooks/useAddressCache'
 import axios from 'axios'
 import { useCardCache } from '../../hooks/useCardCache'
 import { Alert } from 'react-native'
-import { Json, Order, OrderInsert } from '../../types/supabase';
+import { AddressInsert, Json, Order, OrderInsert } from '../../types/supabase';
 
 
 export interface CartContextProps {
@@ -30,7 +30,7 @@ export interface CartContextProps {
   subtractProductFromCart: (product: Product) => void
   setAddress: React.Dispatch<React.SetStateAction<Address | null>>
   createOrder: (
-    cart: Json[],
+    cart: Product[],
     deliveryAddress: Address,
     totalAmount: number,
     router: Router,
@@ -262,7 +262,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           {
             await axios.all(apiCalls)
             await getAddresses()
-            router.replace('/(tabs)/cart')
+            router.replace('/(tabs)/main/cart')
           }
         } catch (error) {
           console.log('Error updating error', error)
@@ -296,13 +296,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Add Card to state
   const submitCard = (card: Card, router: Router, saveCard: boolean = false): Card => {
-    debugger
-    if (!saveCard) {
 
+    if (!saveCard) {
       setSelectedCard(card)
       router.back()
       return card
     }
+
     const cardInCardsIndex = cardsInCache.findIndex((item: Card) => item.card_number === card.card_number)
     if (cardInCardsIndex !== 0) {
       const newCard = [
@@ -325,7 +325,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Add order to api
   const createOrder = async (
     cart: Product[],
-    deliveryAddress: Address,
+    deliveryAddress: AddressInsert | null,
     totalAmount: number,
     router: Router,
   ) => {
@@ -360,6 +360,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       );
       console.log('Order', res)
 
+      router.replace('/(tabs)/main/cart/orderComplete')
     }
     catch (err) {
       console.log(err.response)

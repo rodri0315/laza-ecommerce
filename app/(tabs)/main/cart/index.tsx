@@ -2,15 +2,15 @@
 
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../../contexts/AuthContext';
 import { Button, Image } from '@rneui/themed';
-import { useProducts } from '../../contexts/ProductContext';
-import BackButton from '../../components/BackButton';
+import { useProducts } from '../../../contexts/ProductContext';
+import BackButton from '../../../components/BackButton';
 import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import colors from '../../config/colors';
-import { useCart } from '../../contexts/cart/CartContext';
-import { Card } from '../../types/global';
+import colors from '../../../config/colors';
+import { useCart } from '../../../contexts/cart/CartContext';
+import { Card } from '../../../types/global';
 import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Cart() {
@@ -21,8 +21,8 @@ export default function Cart() {
   const { cart, removeProductFromCart, getAddresses, address, selectedCard,
     subtractProductFromCart, addProductToCart, createOrder
   } = useCart();
-  const router = useRouter();
 
+  const router = useRouter();
   useEffect(() => {
     getAddresses();
   }, []);
@@ -136,7 +136,7 @@ export default function Cart() {
 
       {/* Address */}
       <View style={styles.deliveryContainer}>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/cart/addressList')}>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/main/cart/addressList')}>
           <View style={styles.addressHeader}>
             <Text style={styles.addressHeaderText}>Delivery Address</Text>
             <Octicons name="chevron-right" size={24} color={colors.black} />
@@ -167,7 +167,7 @@ export default function Cart() {
       </View>
       {/* Card Info*/}
       <View>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/cart/payment')}>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/main/cart/payment')}>
           <View style={styles.addressHeader}>
             <Text style={styles.addressHeaderText}>Payment Method</Text>
             <Octicons name="chevron-right" size={24} color={colors.black} />

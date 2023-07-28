@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
-import colors from '../../config/colors';
-import BackButton from '../../components/BackButton';
+import colors from '../../../config/colors';
+import BackButton from '../../../components/BackButton';
 import { useRouter } from 'expo-router';
-import { useCart } from '../../contexts/cart/CartContext';
+import { useCart } from '../../../contexts/cart/CartContext';
 
 export default function AddressList() {
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function AddressList() {
         }
       </ScrollView>
       <TouchableOpacity
-        onPress={() => router.push('/cart/address')}
+        onPress={() => router.push('/main/cart/address')}
         style={styles.button}
       >
         <Text style={styles.buttonText}>Add New Address</Text>

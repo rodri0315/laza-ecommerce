@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '@rneui/themed';
-import { useProducts } from '../contexts/ProductContext';
+import { useProducts } from '../../contexts/ProductContext';
 
-export default function Cart() {
+export default function Cards() {
 
   const { products } = useProducts();
 
@@ -19,7 +19,7 @@ export default function Cart() {
         <View
           style={{}}
         >
-          <Text style={styles.header}>Favorites</Text>
+          <Text style={styles.header}>Cards</Text>
         </View>
       </View>
       <View>

@@ -73,7 +73,7 @@ export interface Database {
         }
         Relationships: []
       }
-      favorites: {
+      userFavorites: {
         Row: {
           created_at: string | null
           id: number
@@ -281,3 +281,20 @@ export type UpdateDto<T extends keyof Database['public']['Tables']> = Database['
 export type Order = Row<'orders'>;
 export type OrderInsert = InsertDto<'orders'>;
 export type OrderUpdate = UpdateDto<'orders'>;
+
+// Address
+export type Address = Row<'addresses'>;
+export type AddressInsert = InsertDto<'addresses'>;
+export type AddressUpdate = UpdateDto<'addresses'>;
+
+// Brand
+export type Brand = Row<'brands'>;
+export type BrandInsert = InsertDto<'brands'>;
+export type BrandUpdate = UpdateDto<'brands'>;
+
+
+// UserFavorite
+export type UserFavorite = Row<'userFavorites'>;
+export type UserFavoriteInsert = InsertDto<'userFavorites'>;
+export type UserFavoriteUpdate = UpdateDto<'userFavorites'>;
+

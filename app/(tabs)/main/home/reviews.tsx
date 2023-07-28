@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import Review from '../../components/review';
-import BackButton from '../../components/BackButton';
-import colors from '../../config/colors';
+import Review from '../../../components/review';
+import BackButton from '../../../components/BackButton';
+import colors from '../../../config/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useCurrentProduct, useProducts } from '../../contexts/ProductContext';
-import { getReviews, useReviews } from '../../contexts/review/ReviewContext';
+import { useCurrentProduct, useProducts } from '../../../contexts/ProductContext';
+import { getReviews, useReviews } from '../../../contexts/review/ReviewContext';
 
 export default function Reviews() {
   const { currentProduct: product } = useCurrentProduct()
@@ -55,7 +55,7 @@ export default function Reviews() {
 
             </View>
           </View>
-          <TouchableOpacity onPress={() => router.push('/home/addReview')}>
+          <TouchableOpacity onPress={() => router.push('/main/addReview')}>
             <View style={styles.addReviewButton}>
               <FontAwesome5 name="edit" size={13} color={colors.white} />
               <Text style={styles.addReviewButtonText}>Add Review</Text>

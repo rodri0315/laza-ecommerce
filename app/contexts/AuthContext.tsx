@@ -40,7 +40,7 @@ function useProtectedRoute(user: Session | null | undefined) {
       router.replace("/signin")
     } else if (user && inAuthGroup) {
       // Redirect away from the sign-in page.
-      router.replace("/(tabs)/home");
+      router.replace("/(tabs)/main/home");
     }
   }, [user, segments, navigationState?.key]);
 }

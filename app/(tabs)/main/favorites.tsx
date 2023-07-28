@@ -9,47 +9,45 @@ import { Image } from '@rneui/themed';
 import ProductCard from '../../components/ProductCard';
 import { useProducts } from '../../contexts/ProductContext';
 
-export default function BrandProducts() {
+export default function Favorites() {
 
   const [loading, setLoading] = useState(false);
 
-  const { brandProducts: products, selectedBrand: brand } = useProducts();
+  const { userFavorites: products } = useProducts();
 
   useEffect(() => {
 
-  }, [brand, products])
+  }, [products])
 
-  if (!brand || !products) return null;
+  if (!products) return null;
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <BackButton />
 
-        <Image source={{
-          uri: brand?.logo_url ? brand.logo_url : 'https://via.placeholder.com/150',
-        }}
-          style={styles.brandImage}
-          resizeMode='contain'
-          containerStyle={styles.brandImageContainer}
-        />
+        <Text style={styles.title}>Wishlist</Text>
 
         <CartButton />
       </View>
       <View style={styles.itemSection}>
         <View style={styles.itemTextContainer}>
           <Text style={styles.itemTitle}>{products.length} Items</Text>
-          <Text style={styles.itemDescription}>Available in stock</Text>
+          <Text style={styles.itemDescription}>in wishlist</Text>
         </View>
         <TouchableOpacity style={styles.sortButton}>
-          <MaterialIcons name="sort" size={18} color="black" />
-          <Text style={styles.sortButtonText}>Sort</Text>
+          <MaterialIcons name="edit" size={18} color="black" />
+          <Text style={styles.sortButtonText}>Edit</Text>
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.cardList}>
         {
           products.map((product, index) => {
-            return <ProductCard key={product.id} product={product} index={index} />
+            return <ProductCard
+              key={product.id}
+              product={product}
+              isFavorite={true}
+              index={index} />
           })
         }
       </ScrollView>
@@ -191,5 +189,9 @@ const styles = StyleSheet.create({
   brandImageContainer: {
     backgroundColor: colors.grey5,
     borderRadius: 10,
+  },
+  title: {
+    fontSize: 17,
+    fontWeight: '600',
   },
 });
