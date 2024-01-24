@@ -1,4 +1,4 @@
-import { Link, useRouter, useSearchParams } from 'expo-router';
+import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import colors from '../config/colors';
@@ -8,7 +8,7 @@ import BackButton from '../components/BackButton';
 
 export default function SignIn() {
   const navigation = useRouter();
-  const params = useSearchParams();
+  const params = useLocalSearchParams();
 
   return (
     <View style={styles.container}>
