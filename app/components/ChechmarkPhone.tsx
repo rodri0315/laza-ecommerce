@@ -1,12 +1,15 @@
 import * as React from "react"
-import Svg, { G, Path, Defs, ClipPath, Rect } from "react-native-svg"
-const SvgComponent = () => (
+import { Svg, G, Path, Defs, ClipPath, Rect } from "react-native-svg"
+import { ISvgProps } from "../../app/types/global"
+
+const SvgComponent = (props: ISvgProps) => (
   <Svg
     width={279}
     height={232}
     viewBox="0 0 279 232"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    {...props}
   >
     <G clipPath="url(#clip0_1_117)">
       <Path
