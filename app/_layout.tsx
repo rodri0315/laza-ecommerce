@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { ThemeProvider, createTheme } from '@rneui/themed';
+import { ThemeProvider } from '@rneui/themed';
 import useCachedResources from './hooks/useCachedResources';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import theme from './config/theme';
@@ -9,7 +9,7 @@ import { ProductProvider } from './contexts/ProductContext';
 import ReviewState from './contexts/review/ReviewContext';
 import { CartProvider } from './contexts/cart/CartContext';
 import { StripeProvider } from '@stripe/stripe-react-native';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function App() {
 
@@ -22,14 +22,14 @@ export default function App() {
       <SafeAreaProvider>
         <AuthProvider>
           <ThemeProvider theme={theme}>
-            <StripeProvider
-              publishableKey={publishableKey}
-            >
+            <StripeProvider publishableKey={publishableKey}>
               <ProductProvider>
                 <CartProvider>
                   <ReviewState>
-                    <StatusBar />
-                    <Slot />
+                    <GestureHandlerRootView style={{ flex: 1 }}>
+                      <StatusBar />
+                      <Slot />
+                    </GestureHandlerRootView>
                   </ReviewState>
                 </CartProvider>
               </ProductProvider>
