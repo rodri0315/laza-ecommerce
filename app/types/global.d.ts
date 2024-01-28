@@ -1,4 +1,4 @@
-
+import {type SvgProps} from 'react-native-svg';
 // Copy of the type from the `expo-router` package.
 export type Router = {
   /** Navigate to the provided href. */
@@ -19,4 +19,18 @@ export type Card = {
   cvv: string;
   user_id: string;
   already_exists?: boolean;
+}
+
+// declare module 'react-native-svg' {
+//   export interface SvgProps {
+//     xmlns?: string;
+//     xmlnsXlink?: string;
+//   }
+// }
+
+//Same as above
+export interface ISvgProps extends SvgProps {
+  xmlns?: string;
+  xmlnsXlink?: string;
+  xmlSpace?: string;
 }

@@ -1,5 +1,4 @@
-import React from 'react'
-import Svg, { SvgProps, Path } from "react-native-svg"
+import React from 'react';
 import { Link, usePathname } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
